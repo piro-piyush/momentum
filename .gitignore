@@ -1,0 +1,140 @@
+# ============================================================
+# OS / Editor
+# ============================================================
+
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ============================================================
+# Environment / Secrets
+# ============================================================
+
+.env
+.env.*
+!.env.example
+
+# ============================================================
+# Flutter / Dart - frontend
+# ============================================================
+
+frontend/.dart_tool/
+frontend/.packages
+frontend/.pub/
+frontend/build/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/.flutter_tool_state
+
+# Flutter generated files
+frontend/**/generated_plugin_registrant.dart
+
+# Android
+frontend/android/.gradle/
+frontend/android/local.properties
+frontend/android/.idea/
+frontend/android/captures/
+frontend/android/.cxx/
+frontend/android/app/.cxx/
+frontend/android/app/build/
+frontend/android/build/
+frontend/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+
+# Android signing / secrets
+frontend/android/key.properties
+frontend/android/*.jks
+frontend/android/*.keystore
+
+# iOS
+frontend/ios/Pods/
+frontend/ios/.symlinks/
+frontend/ios/Flutter/ephemeral/
+frontend/ios/Flutter/.last_build_id
+frontend/ios/Flutter/App.framework
+frontend/ios/Flutter/Flutter.framework
+frontend/ios/Flutter/Generated.xcconfig
+frontend/ios/Runner/GeneratedPluginRegistrant.*
+frontend/ios/Podfile.lock
+
+# macOS
+frontend/macos/Pods/
+frontend/macos/Flutter/ephemeral/
+frontend/macos/Flutter/GeneratedPluginRegistrant.swift
+
+# Linux
+frontend/linux/flutter/ephemeral/
+
+# Windows
+frontend/windows/flutter/ephemeral/
+
+# Web
+frontend/web/.dart_tool/
+
+# ============================================================
+# Node.js - backend
+# ============================================================
+
+backend/node_modules/
+backend/npm-debug.log*
+backend/yarn-debug.log*
+backend/yarn-error.log*
+backend/pnpm-debug.log*
+
+# Package manager caches
+backend/.npm/
+backend/.yarn/
+backend/.pnp.*
+
+# Build / coverage
+backend/dist/
+backend/build/
+backend/coverage/
+backend/.nyc_output/
+
+# Runtime files
+backend/*.log
+backend/logs/
+
+# ============================================================
+# Backend environment files
+# ============================================================
+
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# ============================================================
+# Temporary files
+# ============================================================
+
+*.tmp
+*.temp
+*.log
+*.cache
+
+# ============================================================
+# Local databases / generated data
+# ============================================================
+
+backend/data/
+backend/uploads/
+backend/storage/
+
+# ============================================================
+# Firebase / Google generated files
+# ============================================================
+
+# Uncomment these ONLY if you don't want Firebase config files
+# committed to the repository.
+#
+# frontend/android/app/google-services.json
+# frontend/ios/Runner/GoogleService-Info.plist
+
+# ============================================================
+# Misc
+# ============================================================
+
+.DS_Store

@@ -1,0 +1,39 @@
+name: momentum
+description: "Momentum is a simple, focused task management app built to help you turn plans into progress."
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.9
+  connectivity_plus: ^7.3.1
+  flex_color_picker: ^3.8.0
+  flutter_bloc: ^9.1.1
+  http: ^1.6.0
+  intl: ^0.20.3
+  path: ^1.9.1
+  shared_preferences: ^2.5.5
+  uuid: ^4.6.0
+  sqflite: ^2.4.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  fonts:
+    - family: Cera Pro
+      fonts:
+        - asset: assets/fonts/Cera-Pro-Medium.otf
+          weight: 500
+        - asset: assets/fonts/Cera-Pro-Bold.otf
+          weight: 700
