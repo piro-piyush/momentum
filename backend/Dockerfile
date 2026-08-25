@@ -1,13 +1,13 @@
-FROM node:24-alpine
+ARG NODE_VERSION=26.7.0-alpine3.23
+
+FROM node:${NODE_VERSION}
 
 WORKDIR /app
 
-# Install dependencies first for better Docker layer caching
 COPY package*.json ./
 
 RUN npm ci
 
-# Copy source code
 COPY . .
 
 EXPOSE 8000
