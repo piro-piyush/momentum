@@ -13,6 +13,7 @@ const server = app.listen(PORT, HOST, () => {
 
    Environment: ${process.env.NODE_ENV || "development"}
   `);
+
 });
 
 const shutdown = (signal: string) => {
