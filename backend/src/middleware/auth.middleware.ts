@@ -3,6 +3,7 @@ import type { NextFunction, Request, Response } from "express";
 import { HttpStatus } from "../constants/http-status.js";
 import { ApiResponse } from "../utils/api-response.js";
 import { verifyAccessToken } from "../utils/jwt.js";
+import { logger } from "../utils/logger.js";
 
 export interface AuthenticatedRequest extends Request {
     userId: string;
@@ -42,8 +43,7 @@ export const authenticate = (
 
         next();
     } catch (error) {
-        console.error("Authentication error:", error);
-
+        logger.error("Authentication error", error,);
         return res.status(HttpStatus.UNAUTHORIZED).json(
             ApiResponse.error("Invalid or expired access token"),
         );

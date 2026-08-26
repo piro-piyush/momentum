@@ -10,6 +10,13 @@ export interface LoginBody {
     email: string;
     password: string;
 }
+export interface ForgetPasswordBody {
+    email: string;
+}
+export interface ResetPasswordBody {
+    token: string;
+    password: string;
+}
 
 export type AuthUser = Pick<
     User,
