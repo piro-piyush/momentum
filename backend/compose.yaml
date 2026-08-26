@@ -14,9 +14,14 @@ services:
 
     environment:
       NODE_ENV: ${NODE_ENV:-development}
-      PORT: 8000
-      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@momentum_db:5432/${POSTGRES_DB:-mydb}
+      PORT: ${PORT:-8000}
 
+      # Override .env's localhost inside Docker
+      POSTGRES_HOST: momentum_db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     depends_on:
       momentum_db:
         condition: service_healthy
