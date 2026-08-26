@@ -33,6 +33,34 @@ export const users = pgTable("users", {
         .notNull(),
 });
 
-// Database types
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
+
+export const passwordResetTokens = pgTable(
+    "password_reset_tokens",
+    {
+        id: uuid("id")
+            .primaryKey()
+            .defaultRandom(),
+
+        userId: uuid("user_id")
+            .notNull()
+            .references(() => users.id, {
+                onDelete: "cascade",
+            }),
+
+        tokenHash: text("token_hash")
+            .notNull()
+            .unique(),
+
+        expiresAt: timestamp("expires_at", {
+            withTimezone: true,
+        }).notNull(),
+
+        createdAt: timestamp("created_at", {
+            withTimezone: true,
+        })
+            .defaultNow()
+            .notNull(),
+    },
+);

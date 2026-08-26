@@ -31,9 +31,33 @@ export const generateAccessToken = (userId: string): string => {
 export const verifyAccessToken = (
     token: string,
 ): AccessTokenPayload => {
-    return jwt.verify(token, JWT_SECRET, {
-        algorithms: ["HS256"],
-        issuer: JWT_ISSUER,
-        audience: JWT_AUDIENCE,
-    }) as AccessTokenPayload;
+    try {
+        const payload = jwt.verify(token, JWT_SECRET, {
+            algorithms: ["HS256"],
+            issuer: JWT_ISSUER,
+            audience: JWT_AUDIENCE,
+        });
+
+        if (
+            typeof payload !== "object" ||
+            payload === null ||
+            typeof payload.sub !== "string"
+        ) {
+            throw new Error("Invalid token payload");
+        }
+
+        return {
+            sub: payload.sub,
+        };
+    } catch (error) {
+        if (error instanceof jwt.TokenExpiredError) {
+            throw new Error("Access token has expired");
+        }
+
+        if (error instanceof jwt.JsonWebTokenError) {
+            throw new Error("Invalid access token");
+        }
+
+        throw error;
+    }
 };
