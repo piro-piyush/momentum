@@ -28,8 +28,11 @@ export const users = pgTable("users", {
 
     updatedAt: timestamp("updated_at", {
         withTimezone: true,
-    }),
+    })
+        .defaultNow()
+        .notNull(),
 });
 
+// Database types
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
