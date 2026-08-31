@@ -26,13 +26,13 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state is AuthLoggedIn) {
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            AppRoutes.home,
-            (route) => false,
-          );
-        }
+        // if (state is AuthLoggedIn) {
+        //   Navigator.pushNamedAndRemoveUntil(
+        //     context,
+        //     AppRoutes.home,
+        //     (route) => false,
+        //   );
+        // }
 
         if (state is AuthError) {
           SnackBarUtils.error(context, state.message);
@@ -187,18 +187,25 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void _register() {
+  Future<void> _register() async {
     FocusScope.of(context).unfocus();
 
     if (!formKey.currentState!.validate()) {
       return;
     }
 
-    context.read<AuthCubit>().register(
+    await context.read<AuthCubit>().register(
       name: nameController.text.trim(),
       email: emailController.text.trim(),
       password: passwordController.text.trim(),
     );
+
+    if (!mounted) return;
+    SnackBarUtils.success(
+      context,
+      'Account created successfully. Please login.',
+    );
+    Navigator.pop(context);
   }
 
   @override
