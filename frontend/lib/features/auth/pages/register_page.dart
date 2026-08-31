@@ -24,131 +24,166 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-            child: Form(
-              key: formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 32),
+    return BlocConsumer<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is AuthLoggedIn) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.home,
+            (route) => false,
+          );
+        }
 
-                  Text(
-                    'Create account.',
-                    style: Theme.of(context).textTheme.displaySmall,
-                  ),
+        if (state is AuthError) {
+          SnackBarUtils.error(context, state.message);
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state is AuthLoading;
+        return Scaffold(
+          appBar: AppBar(),
+          body: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 32,
+                ),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 32),
 
-                  const SizedBox(height: 12),
+                      Text(
+                        'Create account.',
+                        style: Theme.of(context).textTheme.displaySmall,
+                      ),
 
-                  Text(
-                    'Start your journey with Momentum.',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
+                      const SizedBox(height: 12),
 
-                  const SizedBox(height: 40),
+                      Text(
+                        'Start your journey with Momentum.',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
 
-                  const TextFieldLabelWidget(label: 'Name'),
+                      const SizedBox(height: 40),
 
-                  const SizedBox(height: 8),
+                      const TextFieldLabelWidget(label: 'Name'),
 
-                  TextFormField(
-                    controller: nameController,
-                    textCapitalization: TextCapitalization.words,
-                    textInputAction: TextInputAction.next,
-                    validator: ValidatorUtils.name,
-                    decoration: const InputDecoration(
-                      hintText: 'Your name',
-                      prefixIcon: Icon(Icons.person_outline_rounded),
-                    ),
-                  ),
+                      const SizedBox(height: 8),
 
-                  const SizedBox(height: 20),
-
-                  const TextFieldLabelWidget(label: 'Email'),
-
-                  const SizedBox(height: 8),
-
-                  TextFormField(
-                    controller: emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                    validator: ValidatorUtils.email,
-                    autocorrect: false,
-                    decoration: const InputDecoration(
-                      hintText: 'you@example.com',
-                      prefixIcon: Icon(Icons.mail_outline_rounded),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  const TextFieldLabelWidget(label: 'Password'),
-
-                  const SizedBox(height: 8),
-
-                  TextFormField(
-                    controller: passwordController,
-                    obscureText: true,
-                    textInputAction: TextInputAction.done,
-                    validator: ValidatorUtils.password,
-
-                    decoration: const InputDecoration(
-                      hintText: 'Create a password',
-                      prefixIcon: Icon(Icons.lock_outline_rounded),
-                    ),
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton(
-                      onPressed: _register,
-                      child: const Text('Create account'),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  Center(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: RichText(
-                        text: TextSpan(
-                          text: 'Already have an account? ',
-                          style: TextStyle(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurfaceVariant,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Sign in',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
+                      TextFormField(
+                        controller: nameController,
+                        textCapitalization: TextCapitalization.words,
+                        textInputAction: TextInputAction.next,
+                        validator: ValidatorUtils.name,
+                        enabled: !isLoading,
+                        decoration: const InputDecoration(
+                          hintText: 'Your name',
+                          prefixIcon: Icon(Icons.person_outline_rounded),
                         ),
                       ),
-                    ),
-                  ),
 
-                  const SizedBox(height: 24),
-                ],
+                      const SizedBox(height: 20),
+
+                      const TextFieldLabelWidget(label: 'Email'),
+
+                      const SizedBox(height: 8),
+
+                      TextFormField(
+                        controller: emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        validator: ValidatorUtils.email,
+                        autocorrect: false,
+                        enabled: !isLoading,
+                        decoration: const InputDecoration(
+                          hintText: 'you@example.com',
+                          prefixIcon: Icon(Icons.mail_outline_rounded),
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      const TextFieldLabelWidget(label: 'Password'),
+
+                      const SizedBox(height: 8),
+
+                      TextFormField(
+                        controller: passwordController,
+                        obscureText: true,
+                        textInputAction: TextInputAction.done,
+                        validator: ValidatorUtils.password,
+                        enabled: !isLoading,
+                        decoration: const InputDecoration(
+                          hintText: 'Create a password',
+                          prefixIcon: Icon(Icons.lock_outline_rounded),
+                        ),
+                      ),
+
+                      const SizedBox(height: 32),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton(
+                          onPressed: isLoading ? null : _register,
+                          child: isLoading
+                              ? const SizedBox(
+                                  width: 22,
+                                  height: 22,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                  ),
+                                )
+                              : const Text('Create account'),
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      Center(
+                        child: TextButton(
+                          onPressed: isLoading
+                              ? null
+                              : () {
+                                  Navigator.pop(context);
+                                },
+                          child: RichText(
+                            text: TextSpan(
+                              text: 'Already have an account? ',
+                              style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: 'Sign in',
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -159,14 +194,11 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    final name = nameController.text.trim();
-    final email = emailController.text.trim();
-    final password = passwordController.text;
-
-    // TODO: Call registration API.
-    debugPrint('Name: $name');
-    debugPrint('Email: $email');
-    debugPrint('Password: $password');
+    context.read<AuthCubit>().register(
+      name: nameController.text.trim(),
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+    );
   }
 
   @override
