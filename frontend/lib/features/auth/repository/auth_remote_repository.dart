@@ -5,8 +5,7 @@ import 'package:momentum/core/core.dart';
 import 'package:momentum/models/user_model.dart';
 
 class AuthRemoteRepository {
-  AuthRemoteRepository({http.Client? client})
-    : _client = client ?? http.Client();
+  AuthRemoteRepository(this._client);
 
   final http.Client _client;
 
