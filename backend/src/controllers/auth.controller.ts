@@ -63,6 +63,7 @@ export const register = async (
                 name: users.name,
                 email: users.email,
                 createdAt: users.createdAt,
+                
             });
 
         if (!user) {

@@ -87,23 +87,21 @@ class AuthRemoteRepository {
   }
 
   UserModel _parseAuthResponse(dynamic body) {
-    if (body is! Map<String, dynamic>) {
-      throw const AuthException('Invalid server response.');
+    try {
+      if (body is! Map<String, dynamic>) {
+        throw const AuthException('Invalid server response.');
+      }
+
+      final data = body['data'];
+
+      if (data is! Map<String, dynamic>) {
+        throw const AuthException('Invalid authentication data.');
+      }
+
+      return UserModel.fromJson(data);
+    } catch (e) {
+      rethrow;
     }
-
-    final data = body['data'];
-
-    if (data is! Map<String, dynamic>) {
-      throw const AuthException('Invalid authentication data.');
-    }
-
-    final user = data['user'];
-
-    if (user is! Map<String, dynamic>) {
-      throw const AuthException('Invalid user data.');
-    }
-
-    return UserModel.fromJson(user);
   }
 
   String _extractErrorMessage(dynamic body) {
