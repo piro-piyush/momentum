@@ -1,29 +1,49 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 import 'package:momentum/lib.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
-  runApp(const MomentumApp());
+  final preferences = await SharedPreferences.getInstance();
+  runApp(MomentumApp(preferences: preferences));
 }
 
 class MomentumApp extends StatelessWidget {
-  const MomentumApp({super.key});
+  const MomentumApp({required this.preferences, super.key});
+
+  final SharedPreferences preferences;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Momentum',
-      debugShowCheckedModeBanner: false,
-
-      // App theme
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
-
-      initialRoute: AppRoutes.login,
-      routes: AppRoutes.routes,
-      // Initial screen
-      home: const RegisterPage(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthCubit>(
+          create: (BuildContext context) => AuthCubit(
+            authRemoteRepository: AuthRemoteRepository(http.Client()),
+            authLocalRepository: AuthLocalRepository(preferences),
+          ),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Momentum',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.system,
+        routes: AppRoutes.routes,
+        home: BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, state) {
+            return switch (state) {
+              AuthInitial() || AuthChecking() => const SplashPage(),
+              AuthLoggedIn() => const HomePage(),
+              AuthLoggedOut() || AuthError() => const LoginPage(),
+              AuthLoading() => const LoginPage(),
+            };
+          },
+        ),
+      ),
     );
   }
 }

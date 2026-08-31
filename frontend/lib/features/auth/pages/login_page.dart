@@ -1,3 +1,4 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:momentum/lib.dart';
 
 class LoginPage extends StatefulWidget {
@@ -10,6 +11,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late final TextEditingController emailController;
   late final TextEditingController passwordController;
+
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -22,126 +24,170 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-            child: Form(
-              key: formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 48),
+    return BlocConsumer<AuthCubit, AuthState>(
+      listener: (context, state) async {
+        if (state is AuthLoggedIn) {
+          await Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.home,
+            (route) => false,
+          );
+          SnackBarUtils.success(context, 'Login successful.');
+        }
 
-                  Text(
-                    'Welcome back.',
-                    style: Theme.of(context).textTheme.displaySmall,
-                  ),
+        if (state is AuthError) {
+          SnackBarUtils.error(context, state.message);
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state is AuthLoading;
 
-                  const SizedBox(height: 12),
+        return Scaffold(
+          body: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 32,
+                ),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 48),
 
-                  Text(
-                    'Sign in to continue your journey.',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
+                      Text(
+                        'Welcome back.',
+                        style: Theme.of(context).textTheme.displaySmall,
+                      ),
 
-                  const SizedBox(height: 40),
+                      const SizedBox(height: 12),
 
-                  const TextFieldLabelWidget(label: 'Email'),
+                      Text(
+                        'Sign in to continue your journey.',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
 
-                  const SizedBox(height: 8),
+                      const SizedBox(height: 40),
 
-                  TextFormField(
-                    controller: emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: ValidatorUtils.email,
+                      const TextFieldLabelWidget(label: 'Email'),
 
-                    textInputAction: TextInputAction.next,
-                    autocorrect: false,
-                    decoration: const InputDecoration(
-                      hintText: 'you@example.com',
-                      prefixIcon: Icon(Icons.mail_outline_rounded),
-                    ),
-                  ),
+                      const SizedBox(height: 8),
 
-                  const SizedBox(height: 20),
-
-                  const TextFieldLabelWidget(label: 'Password'),
-
-                  const SizedBox(height: 8),
-
-                  TextFormField(
-                    controller: passwordController,
-                    obscureText: true,
-                    validator: (value) =>
-                        ValidatorUtils.required(value, fieldName: 'Password'),
-                    textInputAction: TextInputAction.done,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter your password',
-                      prefixIcon: Icon(Icons.lock_outline_rounded),
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        // Forgot password
-                      },
-                      child: const Text('Forgot password?'),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton(
-                      onPressed: _login,
-                      child: const Text('Sign in'),
-                    ),
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  Center(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.register);
-                      },
-                      child: Text.rich(
-                        TextSpan(
-                          text: "Don't have an account? ",
-                          style: TextStyle(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurfaceVariant,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Create one',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
+                      TextFormField(
+                        controller: emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: ValidatorUtils.email,
+                        textInputAction: TextInputAction.next,
+                        autocorrect: false,
+                        enabled: !isLoading,
+                        decoration: const InputDecoration(
+                          hintText: 'you@example.com',
+                          prefixIcon: Icon(Icons.mail_outline_rounded),
                         ),
                       ),
-                    ),
-                  ),
 
-                  const SizedBox(height: 24),
-                ],
+                      const SizedBox(height: 20),
+
+                      const TextFieldLabelWidget(label: 'Password'),
+
+                      const SizedBox(height: 8),
+
+                      TextFormField(
+                        controller: passwordController,
+                        obscureText: true,
+                        validator: (value) => ValidatorUtils.required(
+                          value,
+                          fieldName: 'Password',
+                        ),
+                        textInputAction: TextInputAction.done,
+                        enabled: !isLoading,
+                        onFieldSubmitted: (_) => _login(),
+                        decoration: const InputDecoration(
+                          hintText: 'Enter your password',
+                          prefixIcon: Icon(Icons.lock_outline_rounded),
+                        ),
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: isLoading
+                              ? null
+                              : () {
+                                  // Forgot password
+                                },
+                          child: const Text('Forgot password?'),
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton(
+                          onPressed: isLoading ? null : _login,
+                          child: isLoading
+                              ? const SizedBox(
+                                  width: 22,
+                                  height: 22,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                  ),
+                                )
+                              : const Text('Sign in'),
+                        ),
+                      ),
+
+                      const SizedBox(height: 28),
+
+                      Center(
+                        child: TextButton(
+                          onPressed: isLoading
+                              ? null
+                              : () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.register,
+                                  );
+                                },
+                          child: Text.rich(
+                            TextSpan(
+                              text: "Don't have an account? ",
+                              style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: 'Create one',
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -152,12 +198,10 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    final email = emailController.text.trim();
-    final password = passwordController.text;
-
-    // TODO: Call login API.
-    debugPrint('Email: $email');
-    debugPrint('Password: $password');
+    context.read<AuthCubit>().login(
+      email: emailController.text.trim(),
+      password: passwordController.text,
+    );
   }
 
   @override
