@@ -24,9 +24,22 @@ class AuthCubit extends Cubit<AuthState> {
         return;
       }
 
-      final user = await authRemoteRepository.getUser(token: token);
+      final remoteUser = await authRemoteRepository.getUser(token: token);
 
-      emit(AuthLoggedIn(user));
+      if (remoteUser != null) {
+        await authLocalRepository.saveUser(remoteUser);
+        emit(AuthLoggedIn(remoteUser));
+        return;
+      }
+
+      final localUser = await authLocalRepository.getUser();
+
+      if (localUser == null) {
+        emit(AuthLoggedOut());
+        return;
+      }
+
+      emit(AuthLoggedIn(localUser));
     } catch (_) {
       await SpService.clearToken();
       emit(AuthLoggedOut());
@@ -64,8 +77,10 @@ class AuthCubit extends Cubit<AuthState> {
         password: password,
       );
 
-      await SpService.setToken(token);
-
+      if (token.isNotEmpty) {
+        await SpService.setToken(token);
+      }
+      await authLocalRepository.saveUser(user);
       emit(AuthLoggedIn(user));
     } on AuthException catch (e) {
       emit(AuthError(e.message));

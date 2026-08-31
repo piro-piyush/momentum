@@ -50,16 +50,20 @@ class AuthRemoteRepository {
     });
   }
 
-  Future<UserModel> getUser({required String token}) async {
-    final response = await _service.get(
-      '/auth/me',
-      options: Options(headers: {'Authorization': 'Bearer $token'}),
-    );
+  Future<UserModel?> getUser({required String token}) async {
+    try {
+      final response = await _service.get(
+        '/auth/me',
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
 
-    return ApiService.handleResponse(
-      response,
-      (data) => UserModel.fromJson(data as Map<String, dynamic>),
-    );
+      return await ApiService.handleResponse(
+        response,
+        (data) => UserModel.fromJson(data as Map<String, dynamic>),
+      );
+    } catch (e) {
+      return null;
+    }
   }
 
   void dispose() => _service.close();

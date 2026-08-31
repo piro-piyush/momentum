@@ -3,13 +3,15 @@ import 'package:momentum/lib.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
-  // final preferences = await SharedPreferences.getInstance();
+  final database = await DatabaseService.instance.database;
   await SpService.init();
-  runApp(MomentumApp());
+  runApp(MomentumApp(db: database));
 }
 
 class MomentumApp extends StatelessWidget {
-  const MomentumApp({super.key});
+  final Database db;
+
+  const MomentumApp({super.key, required this.db});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class MomentumApp extends StatelessWidget {
         BlocProvider<AuthCubit>(
           create: (BuildContext context) => AuthCubit(
             authRemoteRepository: AuthRemoteRepository(ApiService()),
-            authLocalRepository: AuthLocalRepository(),
+            authLocalRepository: AuthLocalRepository(db),
           ),
         ),
       ],
