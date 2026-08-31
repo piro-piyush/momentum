@@ -1,3 +1,3 @@
 export 'auth/auth.dart';
-export 'note/note.dart';
+export 'task/task.dart';
 export 'user/user.dart';

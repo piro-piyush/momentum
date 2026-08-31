@@ -1,27 +1,31 @@
-
+import 'package:momentum/lib.dart';
 
 class AuthLocalRepository {
-  AuthLocalRepository();
+  AuthLocalRepository(this._db);
 
-  // final SharedPreferences _localStorage;
+  final Database _db;
 
-  // static const String _key = 'x-auth-token';
+  static const String _tableName = 'users';
 
-  // String? getToken() {
-  //   final token = _localStorage.getString(_key);
-  //
-  //   if (token == null || token.isEmpty) {
-  //     return null;
-  //   }
-  //
-  //   return token;
-  // }
+  Future<UserModel?> getUser() async {
+    final result = await _db.query(_tableName, limit: 1);
 
-  // Future<void> saveToken(String token) async {
-  //   await _localStorage.setString(_key, token);
-  // }
+    if (result.isEmpty) {
+      return null;
+    }
 
-  // Future<void> clearToken() async {
-  //   await _localStorage.remove(_key);
-  // }
+    return UserModel.fromJson(result.first);
+  }
+
+  Future<void> saveUser(UserModel user) async {
+    await _db.insert(
+      _tableName,
+      user.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> clearUser() async {
+    await _db.delete(_tableName);
+  }
 }
