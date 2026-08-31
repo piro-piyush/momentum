@@ -1,7 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:momentum/core/exceptions/auth_exception.dart';
-import 'package:momentum/features/auth/auth.dart';
-import 'package:momentum/models/user_model.dart';
+import 'package:momentum/lib.dart';
 
 part 'auth_state.dart';
 
@@ -20,15 +17,18 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthChecking());
 
     try {
-      final user = await authLocalRepository.getUser();
+      final token = SpService.getToken();
 
-      if (user == null) {
+      if (token == null || token.isEmpty) {
         emit(AuthLoggedOut());
         return;
       }
 
+      final user = await authRemoteRepository.getUser(token: token);
+
       emit(AuthLoggedIn(user));
-    } catch (e) {
+    } catch (_) {
+      await SpService.clearToken();
       emit(AuthLoggedOut());
     }
   }
@@ -41,13 +41,13 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthLoading());
 
-      final UserModel user = await authRemoteRepository.register(
+      await authRemoteRepository.register(
         name: name,
         email: email,
         password: password,
       );
 
-      emit(AuthLoggedIn(user));
+      emit(AuthLoggedOut());
     } on AuthException catch (e) {
       emit(AuthError(e.message));
     } catch (e) {
@@ -59,12 +59,12 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
 
     try {
-      final user = await authRemoteRepository.login(
+      final (user, token) = await authRemoteRepository.login(
         email: email,
         password: password,
       );
 
-      await authLocalRepository.saveUser(user);
+      await SpService.setToken(token);
 
       emit(AuthLoggedIn(user));
     } on AuthException catch (e) {
@@ -76,8 +76,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> logout() async {
     try {
-      await authLocalRepository.clearUser();
-
+      await SpService.clearToken();
       emit(AuthLoggedOut());
     } on AuthException catch (e) {
       emit(AuthError(e.message));

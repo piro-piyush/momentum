@@ -63,7 +63,7 @@ export const register = async (
                 name: users.name,
                 email: users.email,
                 createdAt: users.createdAt,
-                
+
             });
 
         if (!user) {
@@ -77,15 +77,12 @@ export const register = async (
         }
 
         // Generate access token
-        const accessToken = generateAccessToken(user.id);
+        // const accessToken = generateAccessToken(user.id);
 
         return res.status(HttpStatus.CREATED).json(
             ApiResponse.success(
                 "User registered successfully",
-                {
-                    ...user,
-                    token: accessToken,
-                },
+                user
             ),
         );
     } catch (error) {
@@ -142,7 +139,7 @@ export const login = async (
         }
 
         // Generate access token
-        const accessToken = generateAccessToken(existingUser.id);
+        const token = generateAccessToken(existingUser.id);
 
         // Safe user response
         const user: AuthUser = {
@@ -156,8 +153,8 @@ export const login = async (
             ApiResponse.success(
                 "User logged in successfully",
                 {
-                    ...user,
-                    token: accessToken,
+                    user,
+                    token,
                 },
             ),
         );
