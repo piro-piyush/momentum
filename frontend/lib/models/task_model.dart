@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
 import 'package:momentum/lib.dart';
 
 class TaskModel {
@@ -115,38 +116,97 @@ class TaskModel {
         isSynced.hashCode;
   }
 
-  static List<TaskModel> list = <TaskModel>[
+  String get formatDueTime {
+    return DateFormat('h:mm a').format(dueAt);
+  }
+
+  static final List<TaskModel> list = <TaskModel>[
     TaskModel(
-      id: '1',
+      id: 'task-001',
       uid: 'user-1',
-      title: 'Complete Flutter UI',
-      description: 'Finish the Momentum home screen and profile page.',
+      title: 'Fix login validation',
+      description: 'Handle invalid credentials, network errors, and loading states on the login screen.',
+      createdAt: DateTime.now().subtract(const Duration(days: 3)),
+      updatedAt: DateTime.now().subtract(const Duration(hours: 2)),
+      dueAt: DateTime.now().add(const Duration(hours: 2)),
+      color: Colors.red,
+      isSynced: true,
+    ),
+    TaskModel(
+      id: 'task-002',
+      uid: 'user-1',
+      title: 'Review pull request',
+      description: 'Review the authentication changes and leave feedback before merging.',
       createdAt: DateTime.now().subtract(const Duration(days: 1)),
-      updatedAt: DateTime.now(),
-      dueAt: DateTime.now().add(const Duration(hours: 4)),
+      updatedAt: DateTime.now().subtract(const Duration(hours: 5)),
+      dueAt: DateTime.now().add(const Duration(hours: 5)),
       color: Colors.blue,
       isSynced: true,
     ),
     TaskModel(
-      id: '2',
+      id: 'task-003',
       uid: 'user-1',
       title: 'Study DBMS',
-      description: 'Revise normalization and transaction management.',
-      createdAt: DateTime.now().subtract(const Duration(days: 2)),
-      updatedAt: DateTime.now(),
-      dueAt: DateTime.now().add(const Duration(days: 1)),
+      description: 'Revise normalization, transactions, ACID properties, and concurrency control.',
+      createdAt: DateTime.now().subtract(const Duration(days: 4)),
+      updatedAt: DateTime.now().subtract(const Duration(days: 1)),
+      dueAt: DateTime.now().add(const Duration(hours: 8)),
       color: Colors.orange,
       isSynced: true,
     ),
     TaskModel(
-      id: '3',
+      id: 'task-004',
+      uid: 'user-1',
+      title: 'Prepare MCA notes',
+      description: 'Complete notes for the next unit and organize important exam questions.',
+      createdAt: DateTime.now().subtract(const Duration(days: 2)),
+      updatedAt: DateTime.now().subtract(const Duration(hours: 3)),
+      dueAt: DateTime.now().add(const Duration(days: 1)),
+      color: Colors.purple,
+      isSynced: false,
+    ),
+    TaskModel(
+      id: 'task-005',
       uid: 'user-1',
       title: 'Plan tomorrow',
-      description: 'Prepare tasks and priorities for tomorrow.',
+      description: 'Review unfinished tasks and decide the top three priorities for tomorrow.',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
-      dueAt: DateTime.now().add(const Duration(days: 2)),
+      dueAt: DateTime.now().add(const Duration(days: 1)),
       color: Colors.green,
+      isSynced: false,
+    ),
+    TaskModel(
+      id: 'task-006',
+      uid: 'user-1',
+      title: 'Update project documentation',
+      description: 'Document the API endpoints, authentication flow, and local database setup.',
+      createdAt: DateTime.now().subtract(const Duration(days: 6)),
+      updatedAt: DateTime.now().subtract(const Duration(days: 2)),
+      dueAt: DateTime.now().add(const Duration(days: 3)),
+      color: Colors.indigo,
+      isSynced: true,
+    ),
+    TaskModel(
+      id: 'task-007',
+      uid: 'user-1',
+      title: 'Clean up Flutter code',
+      description: 'Remove unused imports, simplify duplicated logic, and fix analyzer warnings.',
+      createdAt: DateTime.now().subtract(const Duration(days: 5)),
+      updatedAt: DateTime.now().subtract(const Duration(days: 1)),
+      dueAt: DateTime.now().add(const Duration(days: 4)),
+      color: Colors.teal,
+      isSynced: true,
+    ),
+    TaskModel(
+      id: 'task-008',
+      uid: 'user-1',
+      title: 'Backup important files',
+      description: 'Back up the current project, environment configuration, and important documents.',
+      createdAt: DateTime.now().subtract(const Duration(days: 2)),
+      updatedAt: DateTime.now().subtract(const Duration(hours: 6)),
+      dueAt: DateTime.now().add(const Duration(days: 5)),
+      color: Colors.brown,
       isSynced: false,
     ),
   ];

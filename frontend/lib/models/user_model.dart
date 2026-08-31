@@ -5,7 +5,6 @@ class UserModel {
   final String email;
   final String name;
 
-  // final String token;
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -13,7 +12,6 @@ class UserModel {
     required this.id,
     required this.email,
     required this.name,
-    // required this.token,
     required this.createdAt,
     this.updatedAt,
   });
@@ -22,7 +20,6 @@ class UserModel {
     String? id,
     String? email,
     String? name,
-    // String? token,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -30,7 +27,6 @@ class UserModel {
       id: id ?? this.id,
       email: email ?? this.email,
       name: name ?? this.name,
-      // token: token ?? this.token,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -41,7 +37,6 @@ class UserModel {
       'id': id,
       'name': name,
       'email': email,
-      // 'token': token,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
     };
@@ -53,7 +48,6 @@ class UserModel {
         id: json['id'],
         email: json['email'],
         name: json['name'],
-        // token: json['token'],
         createdAt: DateTime.parse(json['createdAt'].toString()).toLocal(),
         updatedAt: json['updatedAt'] != null
             ? DateTime.parse(json['updated_at'].toString()).toLocal()
@@ -71,7 +65,6 @@ class UserModel {
     return other.id == id &&
         other.email == email &&
         other.name == name &&
-        // other.token == token &&
         other.createdAt == createdAt &&
         other.updatedAt == updatedAt;
   }
@@ -81,7 +74,6 @@ class UserModel {
     return id.hashCode ^
         email.hashCode ^
         name.hashCode ^
-        // token.hashCode ^
         createdAt.hashCode ^
         updatedAt.hashCode;
   }
