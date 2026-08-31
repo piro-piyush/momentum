@@ -1,8 +1,8 @@
 import 'package:momentum/lib.dart';
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-
+  await dotenv.load(fileName: '.env');
   runApp(const MomentumApp());
 }
 
