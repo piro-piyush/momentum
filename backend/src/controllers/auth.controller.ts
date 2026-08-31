@@ -17,6 +17,7 @@ import { logger } from "../utils/logger.js";
 
 import crypto from "node:crypto";
 import { emailService } from "../service/email.service.js";
+
 export const register = async (
     req: Request<{}, {}, RegisterBody>,
     res: Response,
@@ -81,8 +82,8 @@ export const register = async (
             ApiResponse.success(
                 "User registered successfully",
                 {
-                    user,
-                    accessToken,
+                    ...user,
+                    token: accessToken,
                 },
             ),
         );
@@ -95,7 +96,7 @@ export const register = async (
             HttpStatus.INTERNAL_SERVER_ERROR,
         ).json(
             ApiResponse.error(
-                "Failed to register user",
+                "Failed to register user", error
             ),
         );
     }
@@ -154,8 +155,8 @@ export const login = async (
             ApiResponse.success(
                 "User logged in successfully",
                 {
-                    user,
-                    accessToken,
+                    ...user,
+                    token: accessToken,
                 },
             ),
         );
@@ -165,7 +166,7 @@ export const login = async (
         });
 
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(
-            ApiResponse.error("Failed to login"),
+            ApiResponse.error("Failed to login", error),
         );
     }
 };
@@ -212,7 +213,7 @@ export const getMe = async (
         });
 
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(
-            ApiResponse.error("Failed to get current user"),
+            ApiResponse.error("Failed to get current user", error),
         );
     }
 };
@@ -373,7 +374,7 @@ export const forgotPassword = async (
 
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(
             ApiResponse.error(
-                "Failed to process password reset request",
+                "Failed to process password reset request", error
             ),
         );
     }
@@ -481,7 +482,7 @@ export const resetPassword = async (
 
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(
             ApiResponse.error(
-                "Failed to reset password",
+                "Failed to reset password", error
             ),
         );
     }
