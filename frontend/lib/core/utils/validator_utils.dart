@@ -32,7 +32,7 @@ class ValidatorUtils {
 
     final email = value!.trim();
 
-    final emailRegex = RegExp(r'^[\w\.-]+@([\w-]+\.)+[\w-]{2,}$');
+    final emailRegex = RegExp(r'^[\w.-]+@([\w-]+\.)+[\w-]{2,}$');
 
     if (!emailRegex.hasMatch(email)) {
       return 'Enter a valid email address';
