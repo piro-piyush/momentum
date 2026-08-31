@@ -48,7 +48,7 @@ class ValidatorUtils {
       return error;
     }
 
-    if (value!.length < 8) {
+    if (value!.length < 6) {
       return 'Password must be at least 8 characters';
     }
 

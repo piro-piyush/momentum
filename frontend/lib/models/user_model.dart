@@ -6,7 +6,7 @@ class UserModel {
   final String name;
   final String token;
   final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? updatedAt;
 
   UserModel({
     required this.id,
@@ -14,7 +14,7 @@ class UserModel {
     required this.name,
     required this.token,
     required this.createdAt,
-    required this.updatedAt,
+    this.updatedAt,
   });
 
   UserModel copyWith({
@@ -35,14 +35,14 @@ class UserModel {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+  Map<String, dynamic> toJson() {
+    return {
       'id': id,
-      'email': email,
       'name': name,
+      'email': email,
       'token': token,
       'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
     };
   }
 
@@ -54,7 +54,9 @@ class UserModel {
         name: json['name'],
         token: json['token'],
         createdAt: DateTime.parse(json['createdAt'].toString()).toLocal(),
-        updatedAt: DateTime.parse(json['updatedAt'].toString()).toLocal(),
+        updatedAt: json['updatedAt'] != null
+            ? DateTime.parse(json['updated_at'].toString()).toLocal()
+            : null,
       );
     } catch (e) {
       rethrow;

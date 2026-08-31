@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:momentum/lib.dart';
-
 
 class TaskModel {
   final String id;
@@ -13,7 +11,8 @@ class TaskModel {
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime dueAt;
-  final int isSynced;
+  final bool isSynced;
+
   TaskModel({
     required this.id,
     required this.uid,
@@ -35,7 +34,7 @@ class TaskModel {
     DateTime? updatedAt,
     DateTime? dueAt,
     Color? color,
-    int? isSynced,
+    bool? isSynced,
   }) {
     return TaskModel(
       id: id ?? this.id,
@@ -106,13 +105,49 @@ class TaskModel {
   @override
   int get hashCode {
     return id.hashCode ^
-    uid.hashCode ^
-    title.hashCode ^
-    description.hashCode ^
-    createdAt.hashCode ^
-    updatedAt.hashCode ^
-    dueAt.hashCode ^
-    color.hashCode ^
-    isSynced.hashCode;
+        uid.hashCode ^
+        title.hashCode ^
+        description.hashCode ^
+        createdAt.hashCode ^
+        updatedAt.hashCode ^
+        dueAt.hashCode ^
+        color.hashCode ^
+        isSynced.hashCode;
   }
+
+  static List<TaskModel> list = <TaskModel>[
+    TaskModel(
+      id: '1',
+      uid: 'user-1',
+      title: 'Complete Flutter UI',
+      description: 'Finish the Momentum home screen and profile page.',
+      createdAt: DateTime.now().subtract(const Duration(days: 1)),
+      updatedAt: DateTime.now(),
+      dueAt: DateTime.now().add(const Duration(hours: 4)),
+      color: Colors.blue,
+      isSynced: true,
+    ),
+    TaskModel(
+      id: '2',
+      uid: 'user-1',
+      title: 'Study DBMS',
+      description: 'Revise normalization and transaction management.',
+      createdAt: DateTime.now().subtract(const Duration(days: 2)),
+      updatedAt: DateTime.now(),
+      dueAt: DateTime.now().add(const Duration(days: 1)),
+      color: Colors.orange,
+      isSynced: true,
+    ),
+    TaskModel(
+      id: '3',
+      uid: 'user-1',
+      title: 'Plan tomorrow',
+      description: 'Prepare tasks and priorities for tomorrow.',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      dueAt: DateTime.now().add(const Duration(days: 2)),
+      color: Colors.green,
+      isSynced: false,
+    ),
+  ];
 }
