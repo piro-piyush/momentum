@@ -1,120 +1,66 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-import 'package:momentum/core/core.dart';
-import 'package:momentum/models/user_model.dart';
+import 'package:momentum/lib.dart';
 
 class AuthRemoteRepository {
-  AuthRemoteRepository(this._client);
+  AuthRemoteRepository(this._service);
 
-  final http.Client _client;
+  final ApiService _service;
 
-  static const _headers = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  };
-
-  Future<UserModel> register({
+  Future<void> register({
     required String name,
     required String email,
     required String password,
   }) async {
-    try {
-      final response = await _client.post(
-        Uri.parse('${Constants.backendUri}/auth/register'),
-        headers: _headers,
-        body: jsonEncode({
-          'name': name.trim(),
-          'email': email.trim(),
-          'password': password,
-        }),
-      );
+    final response = await _service.post(
+      '/auth/register',
+      data: {'name': name.trim(), 'email': email.trim(), 'password': password},
+    );
 
-      return _handleResponse(response, successStatusCode: 201);
-    } on AuthException {
-      rethrow;
-    } on http.ClientException catch (e) {
-      throw AuthException('Network error: ${e.message}');
-    } catch (_) {
-      throw const AuthException('Something went wrong. Please try again.');
-    }
+    ApiService.handleResponse(response, (_) {});
   }
 
-  Future<UserModel> login({
+  Future<(UserModel, String)> login({
     required String email,
     required String password,
   }) async {
-    try {
-      final response = await _client.post(
-        Uri.parse('${Constants.backendUri}/auth/login'),
-        headers: _headers,
-        body: jsonEncode({'email': email.trim(), 'password': password}),
+    final response = await _service.post(
+      '/auth/login',
+      data: {'email': email.trim(), 'password': password},
+    );
+
+    return ApiService.handleResponse(response, (data) {
+      final json = data as Map<String, dynamic>;
+
+      return (
+        UserModel.fromJson(json['user'] as Map<String, dynamic>),
+        json['token'] as String,
       );
-
-      return _handleResponse(response, successStatusCode: 200);
-    } on AuthException {
-      rethrow;
-    } on http.ClientException catch (e) {
-      throw AuthException('Network error: ${e.message}');
-    } catch (_) {
-      throw const AuthException('Something went wrong. Please try again.');
-    }
+    });
   }
 
-  UserModel _handleResponse(
-    http.Response response, {
-    required int successStatusCode,
-  }) {
-    final body = _decodeResponse(response);
+  Future<(bool, String)> tokenIsValid({required String token}) async {
+    final response = await _service.get(
+      '/auth/token-is-valid',
+      options: Options(headers: {'Authorization': 'Bearer $token'}),
+    );
 
-    if (response.statusCode == successStatusCode) {
-      return _parseAuthResponse(body);
-    }
+    return ApiService.handleResponse(response, (data) {
+      final json = data as Map<String, dynamic>;
 
-    throw AuthException(_extractErrorMessage(body));
+      return (json['valid'] as bool, json['userId'] as String);
+    });
   }
 
-  dynamic _decodeResponse(http.Response response) {
-    if (response.body.isEmpty) {
-      throw const AuthException('Empty response from server.');
-    }
+  Future<UserModel> getUser({required String token}) async {
+    final response = await _service.get(
+      '/auth/me',
+      options: Options(headers: {'Authorization': 'Bearer $token'}),
+    );
 
-    try {
-      return jsonDecode(response.body);
-    } on FormatException {
-      throw const AuthException('Invalid response from server.');
-    }
+    return ApiService.handleResponse(
+      response,
+      (data) => UserModel.fromJson(data as Map<String, dynamic>),
+    );
   }
 
-  UserModel _parseAuthResponse(dynamic body) {
-    try {
-      if (body is! Map<String, dynamic>) {
-        throw const AuthException('Invalid server response.');
-      }
-
-      final data = body['data'];
-
-      if (data is! Map<String, dynamic>) {
-        throw const AuthException('Invalid authentication data.');
-      }
-
-      return UserModel.fromJson(data);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  String _extractErrorMessage(dynamic body) {
-    if (body is Map<String, dynamic>) {
-      return body['message']?.toString() ??
-          body['error']?.toString() ??
-          'Something went wrong.';
-    }
-
-    return 'Something went wrong.';
-  }
-
-  void dispose() {
-    _client.close();
-  }
+  void dispose() => _service.close();
 }

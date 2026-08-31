@@ -1,37 +1,27 @@
-import 'dart:convert';
 
-import 'package:momentum/models/user_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthLocalRepository {
-  AuthLocalRepository(this._localStorage);
+  AuthLocalRepository();
 
-  final SharedPreferences _localStorage;
+  // final SharedPreferences _localStorage;
 
-  static const String _userKey = 'auth_user';
+  // static const String _key = 'x-auth-token';
 
-  Future<UserModel?> getUser() async {
-    final userJson = _localStorage.getString(_userKey);
+  // String? getToken() {
+  //   final token = _localStorage.getString(_key);
+  //
+  //   if (token == null || token.isEmpty) {
+  //     return null;
+  //   }
+  //
+  //   return token;
+  // }
 
-    if (userJson == null || userJson.isEmpty) {
-      return null;
-    }
+  // Future<void> saveToken(String token) async {
+  //   await _localStorage.setString(_key, token);
+  // }
 
-    try {
-      final data = jsonDecode(userJson) as Map<String, dynamic>;
-
-      return UserModel.fromJson(data);
-    } catch (_) {
-      await clearUser();
-      return null;
-    }
-  }
-
-  Future<void> saveUser(UserModel user) async {
-    await _localStorage.setString(_userKey, jsonEncode(user.toJson()));
-  }
-
-  Future<void> clearUser() async {
-    await _localStorage.remove(_userKey);
-  }
+  // Future<void> clearToken() async {
+  //   await _localStorage.remove(_key);
+  // }
 }
