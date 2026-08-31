@@ -74,6 +74,18 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  Future<void> logout() async {
+    try {
+      await authLocalRepository.clearUser();
+
+      emit(AuthLoggedOut());
+    } on AuthException catch (e) {
+      emit(AuthError(e.message));
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
+  }
+
   @override
   Future<void> close() {
     authRemoteRepository.dispose();

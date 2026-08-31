@@ -1,4 +1,3 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:momentum/lib.dart';
 
 class LoginPage extends StatefulWidget {
@@ -25,14 +24,13 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
-      listener: (context, state) async {
+      listener: (context, state) {
         if (state is AuthLoggedIn) {
-          await Navigator.pushNamedAndRemoveUntil(
+          Navigator.pushNamedAndRemoveUntil(
             context,
             AppRoutes.home,
             (route) => false,
           );
-          SnackBarUtils.success(context, 'Login successful.');
         }
 
         if (state is AuthError) {
