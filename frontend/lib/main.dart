@@ -1,18 +1,15 @@
-import 'package:http/http.dart' as http;
 import 'package:momentum/lib.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
-  final preferences = await SharedPreferences.getInstance();
-  runApp(MomentumApp(preferences: preferences));
+  // final preferences = await SharedPreferences.getInstance();
+  await SpService.init();
+  runApp(MomentumApp());
 }
 
 class MomentumApp extends StatelessWidget {
-  const MomentumApp({required this.preferences, super.key});
-
-  final SharedPreferences preferences;
+  const MomentumApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +17,8 @@ class MomentumApp extends StatelessWidget {
       providers: [
         BlocProvider<AuthCubit>(
           create: (BuildContext context) => AuthCubit(
-            authRemoteRepository: AuthRemoteRepository(http.Client()),
-            authLocalRepository: AuthLocalRepository(preferences),
+            authRemoteRepository: AuthRemoteRepository(ApiService()),
+            authLocalRepository: AuthLocalRepository(),
           ),
         ),
       ],
