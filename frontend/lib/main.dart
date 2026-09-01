@@ -23,6 +23,12 @@ class MomentumApp extends StatelessWidget {
             authLocalRepository: AuthLocalRepository(db),
           ),
         ),
+        BlocProvider<TasksCubit>(
+          create: (BuildContext context) => TasksCubit(
+            taskLocalRepository: TaskLocalRepository(db),
+            taskRemoteRepository: TaskRemoteRepository(ApiService()),
+          ),
+        ),
       ],
       child: MaterialApp(
         title: 'Momentum',

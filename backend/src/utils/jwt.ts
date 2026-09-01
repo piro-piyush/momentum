@@ -21,7 +21,7 @@ export const generateAccessToken = (userId: string): string => {
         JWT_SECRET,
         {
             algorithm: "HS256",
-            expiresIn: "15m",
+            // expiresIn: "15m",
             issuer: JWT_ISSUER,
             audience: JWT_AUDIENCE,
         },

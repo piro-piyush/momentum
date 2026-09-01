@@ -1,9 +1,14 @@
 import { Router } from "express";
+
 import authRouter from "./auth.js";
 import { healthRouter } from "./health.routes.js";
+import tasksRouter from "./tasks.js";
+
 export const apiRouter = Router();
 
-apiRouter.use('/auth', authRouter);
+apiRouter.use("/auth", authRouter);
+
+apiRouter.use("/tasks", tasksRouter);
 
 apiRouter.get("/", (_req, res) => {
   res.json({
