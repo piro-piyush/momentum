@@ -206,8 +206,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tasks = TaskModel.list;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Tasks'),
@@ -225,18 +223,33 @@ class HomePage extends StatelessWidget {
         spacing: 12,
         children: [
           const DateSelectorWidget(),
-          Expanded(
-            child: ListView.builder(
-              itemCount: tasks.length,
-              itemBuilder: (context, index) {
-                final task = tasks[index];
 
-                return TaskCardWidget(
-                  color: Color.fromRGBO(246, 222, 194, 1),
-                  title: task.title,
-                  description: task.description,
-                  dueDate: task.formatDueTime,
-                );
+          Expanded(
+            child: BlocBuilder<TasksCubit, TasksState>(
+              builder: (context, state) {
+                return switch (state) {
+                  TasksInitial() => const SizedBox.shrink(),
+
+                  TasksLoading() => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+
+                  TasksLoaded(:final tasks) => ListView.builder(
+                    itemCount: tasks.length,
+                    itemBuilder: (context, index) {
+                      final task = tasks[index];
+
+                      return TaskCardWidget(
+                        color: task.color,
+                        title: task.title,
+                        description: task.description,
+                        dueDate: task.formatDueTime,
+                      );
+                    },
+                  ),
+
+                  TaskListError(:final message) => Center(child: Text(message)),
+                };
               },
             ),
           ),

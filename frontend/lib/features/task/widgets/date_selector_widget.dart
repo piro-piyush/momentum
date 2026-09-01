@@ -15,7 +15,6 @@ class _DateSelectorWidgetState extends State<DateSelectorWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final weekDates = generateWeekDates(weekOffset);
     String monthName = DateFormat("MMMM").format(weekDates.first);
     return Column(

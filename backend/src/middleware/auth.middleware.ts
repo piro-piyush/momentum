@@ -8,6 +8,9 @@ import { logger } from "../utils/logger.js";
 export interface AuthenticatedRequest extends Request {
     userId: string;
 }
+// export type AuthenticatedRequest = {
+//     userId: string;
+// };
 
 export const authenticate = (
     req: Request,

@@ -7,7 +7,7 @@ class DatabaseService {
   static final DatabaseService instance = DatabaseService._();
 
   static const String _databaseName = 'momentum.db';
-  static const int _databaseVersion = 1;
+  static const int _databaseVersion = 2;
 
   Database? _database;
 
@@ -28,16 +28,41 @@ class DatabaseService {
       path,
       version: _databaseVersion,
       onCreate: (db, version) async {
-        await db.execute('''
-          CREATE TABLE users (
-            id TEXT PRIMARY KEY,
-            email TEXT NOT NULL UNIQUE,
-            name TEXT NOT NULL,
-            createdAt TEXT NOT NULL,
-            updatedAt TEXT
-          )
-        ''');
+        await _createUsersTable(db);
+        await _createTasksTable(db);
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await _createTasksTable(db);
+        }
       },
     );
+  }
+
+  Future<void> _createUsersTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE users (
+        id TEXT PRIMARY KEY,
+        email TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        createdAt TEXT NOT NULL,
+        updatedAt TEXT
+      )
+    ''');
+  }
+
+  Future<void> _createTasksTable(Database db) async {
+    await db.execute('''
+    CREATE TABLE tasks (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT,
+      color INTEGER NOT NULL,
+      createdAt TEXT NOT NULL,
+      updatedAt TEXT,
+      dueAt TEXT NOT NULL,
+      isSynced INTEGER NOT NULL DEFAULT 0
+    )
+  ''');
   }
 }
