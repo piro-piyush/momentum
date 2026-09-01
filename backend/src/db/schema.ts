@@ -2,7 +2,7 @@ import {
     pgTable,
     text,
     timestamp,
-    uuid,
+    uuid
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -64,3 +64,44 @@ export const passwordResetTokens = pgTable(
             .notNull(),
     },
 );
+
+// ============================================================================
+// TASKS
+// ============================================================================
+export const tasks = pgTable("tasks", {
+    id: uuid("id")
+        .primaryKey()
+        .defaultRandom(),
+
+    uid: uuid("uid")
+        .notNull()
+        .references(() => users.id, {
+            onDelete: "cascade",
+        }),
+
+    title: text("title")
+        .notNull(),
+
+    description: text("description"),
+
+    // Flutter Color.toARGB32() value.
+    color: text("color").notNull(),
+
+    createdAt: timestamp("created_at", {
+        withTimezone: true,
+    })
+        .defaultNow()
+        .notNull(),
+
+    updatedAt: timestamp("updated_at", {
+        withTimezone: true,
+    }),
+
+    dueAt: timestamp("due_at", {
+        withTimezone: true,
+    })
+        .notNull(),
+});
+
+export type Task = typeof tasks.$inferSelect;
+export type NewTask = typeof tasks.$inferInsert;

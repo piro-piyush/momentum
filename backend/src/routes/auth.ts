@@ -17,12 +17,12 @@ const authRouter = Router();
 // GET /auth/
 // -----------------------------------------------------------------------------
 
-authRouter.get("/", (_req, res) => {
-    res.json({
-        success: true,
-        message: "Auth API is working",
-    });
-});
+// authRouter.get("/", (_req, res) => {
+//     res.json({
+//         success: true,
+//         message: "Auth API is working",
+//     });
+// });
 
 // -----------------------------------------------------------------------------
 // Public routes
