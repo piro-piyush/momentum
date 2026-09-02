@@ -43,6 +43,28 @@ class AppTheme {
 
   static const Color darkBorder = Color(0xFF222222);
 
+  static const rose = Color(0xFFE58B91);
+  static const peach = Color(0xFFE6A56F);
+  static const butter = Color(0xFFD9B84C);
+  static const sage = Color(0xFF8FAF78);
+  static const mint = Color(0xFF70B5A5);
+  static const sky = Color(0xFF78A8D0);
+  static const lavender = Color(0xFF9B8BC4);
+  static const mauve = Color(0xFFC28DA5);
+  static const stone = Color(0xFF9B9B94);
+
+  static const all = [
+    rose,
+    peach,
+    butter,
+    sage,
+    mint,
+    sky,
+    lavender,
+    mauve,
+    stone,
+  ];
+
   // ─────────────────────────────────────────────
   // Light Theme
   // ─────────────────────────────────────────────

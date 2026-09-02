@@ -1,9 +1,6 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
-
-enum ConnectionStatus { connected, disconnected }
 
 class ConnectivityService {
   ConnectivityService._();
@@ -12,29 +9,15 @@ class ConnectivityService {
 
   final Connectivity _connectivity = Connectivity();
 
-  StreamController<ConnectionStatus>? _controller;
+  Stream<List<ConnectivityResult>> get onConnectivityChanged =>
+      _connectivity.onConnectivityChanged;
 
-  Stream<ConnectionStatus> get connectionStream {
-    _controller ??= StreamController<ConnectionStatus>.broadcast();
+  Future<List<ConnectivityResult>> get currentConnectivity =>
+      _connectivity.checkConnectivity();
 
-    _connectivity.onConnectivityChanged.listen((_) async {
-      final hasInternet = await InternetConnection().hasInternetAccess;
+  Future<bool> get isConnected async {
+    final result = await currentConnectivity;
 
-      _controller?.add(
-        hasInternet
-            ? ConnectionStatus.connected
-            : ConnectionStatus.disconnected,
-      );
-    });
-
-    return _controller!.stream;
-  }
-
-  Future<bool> hasInternet() async {
-    return InternetConnection().hasInternetAccess;
-  }
-
-  void dispose() {
-    _controller?.close();
+    return result.any((connection) => connection != ConnectivityResult.none);
   }
 }

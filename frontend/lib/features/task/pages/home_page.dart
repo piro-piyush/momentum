@@ -116,7 +116,6 @@ import 'package:momentum/lib.dart';
 //
 //                 const SizedBox(height: 32),
 //
-//
 //                 Row(
 //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                   children: [
@@ -191,16 +190,24 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoutes.newTask);
+        },
+        icon: const Icon(Icons.add_rounded),
+        label: const Text('New task'),
+      ),
       appBar: AppBar(
         title: const Text('My Tasks'),
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, AppRoutes.newTask);
+              Navigator.pushNamed(context, AppRoutes.profile);
             },
-            icon: const Icon(Icons.add_rounded),
+            icon: const Icon(Icons.person_outline_rounded),
           ),
+          const SizedBox(width: 8),
         ],
       ),
       body: Column(

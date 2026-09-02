@@ -57,7 +57,7 @@ class DatabaseService {
       id TEXT PRIMARY KEY,
       title TEXT NOT NULL,
       description TEXT,
-      color INTEGER NOT NULL,
+ 
       createdAt TEXT NOT NULL,
       updatedAt TEXT,
       dueAt TEXT NOT NULL,
@@ -66,5 +66,14 @@ class DatabaseService {
       isNew INTEGER NOT NULL DEFAULT 0
     )
   ''');
+  }
+
+  /// Clears all locally stored user data.
+  Future<void> clearUserData() async {
+    final db = await database;
+    await db.transaction((txn) async {
+      await txn.delete('tasks');
+      await txn.delete('users');
+    });
   }
 }

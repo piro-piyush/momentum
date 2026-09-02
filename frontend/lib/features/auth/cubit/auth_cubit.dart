@@ -93,6 +93,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> logout() async {
     try {
       await SpService.clearToken();
+      await DatabaseService.instance.clearUserData();
       emit(AuthLoggedOut());
     } on AuthException catch (e) {
       emit(AuthError(e.message));
