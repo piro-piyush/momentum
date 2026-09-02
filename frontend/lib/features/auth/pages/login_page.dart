@@ -10,7 +10,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late final TextEditingController emailController;
   late final TextEditingController passwordController;
-
+  bool isObsecureText = true;
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
 
                       TextFormField(
                         controller: passwordController,
-                        obscureText: true,
+                        obscureText: isObsecureText,
                         validator: (value) => ValidatorUtils.required(
                           value,
                           fieldName: 'Password',
@@ -104,9 +104,21 @@ class _LoginPageState extends State<LoginPage> {
                         textInputAction: TextInputAction.done,
                         enabled: !isLoading,
                         onFieldSubmitted: (_) => _login(),
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           hintText: 'Enter your password',
-                          prefixIcon: Icon(Icons.lock_outline_rounded),
+                          prefixIcon: const Icon(Icons.lock_outline_rounded),
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                isObsecureText = !isObsecureText;
+                              });
+                            },
+                            icon: Icon(
+                              !isObsecureText
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                            ),
+                          ),
                         ),
                       ),
 

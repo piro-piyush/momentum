@@ -7,7 +7,7 @@ class DatabaseService {
   static final DatabaseService instance = DatabaseService._();
 
   static const String _databaseName = 'momentum.db';
-  static const int _databaseVersion = 2;
+  static const int _databaseVersion = 1;
 
   Database? _database;
 
@@ -61,7 +61,8 @@ class DatabaseService {
       createdAt TEXT NOT NULL,
       updatedAt TEXT,
       dueAt TEXT NOT NULL,
-      isSynced INTEGER NOT NULL DEFAULT 0
+      isSynced INTEGER NOT NULL DEFAULT 0,
+      isDeleted INTEGER NOT NULL DEFAULT 0
     )
   ''');
   }

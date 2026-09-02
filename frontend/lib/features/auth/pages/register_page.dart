@@ -12,6 +12,7 @@ class _RegisterPageState extends State<RegisterPage> {
   late final TextEditingController emailController;
   late final TextEditingController passwordController;
   final formKey = GlobalKey<FormState>();
+  bool isObsecureText = true;
 
   @override
   void initState() {
@@ -115,13 +116,25 @@ class _RegisterPageState extends State<RegisterPage> {
 
                       TextFormField(
                         controller: passwordController,
-                        obscureText: true,
+                        obscureText: isObsecureText,
                         textInputAction: TextInputAction.done,
                         validator: ValidatorUtils.password,
                         enabled: !isLoading,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           hintText: 'Create a password',
-                          prefixIcon: Icon(Icons.lock_outline_rounded),
+                          prefixIcon: const Icon(Icons.lock_outline_rounded),
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                isObsecureText = !isObsecureText;
+                              });
+                            },
+                            icon: Icon(
+                              !isObsecureText
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                            ),
+                          ),
                         ),
                       ),
 
