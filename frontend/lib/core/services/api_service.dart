@@ -174,4 +174,30 @@ class ApiService {
   void close() {
     _dio.close();
   }
+
+  static String getApiErrorMessage(String fallback, dynamic details) {
+    if (details is! Map) {
+      return fallback;
+    }
+
+    final properties = details['properties'];
+
+    if (properties is! Map || properties.isEmpty) {
+      return fallback;
+    }
+
+    final entry = properties.entries.first;
+    final field = entry.key.toString();
+    final fieldError = entry.value;
+
+    if (fieldError is Map) {
+      final errors = fieldError['errors'];
+
+      if (errors is List && errors.isNotEmpty) {
+        return '$field: ${errors.first}';
+      }
+    }
+
+    return '$field: $fieldError';
+  }
 }

@@ -42,7 +42,7 @@ class MomentumApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       routes: AppRoutes.routes,
       home: BlocBuilder<AuthCubit, AuthState>(
         builder: (context, state) {
