@@ -234,6 +234,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
       color: selectedColor,
       updatedAt: now,
       isSynced: false,
+      isDeleted: false,
     );
 
     final newTask = TaskModel(
@@ -243,6 +244,8 @@ class _NewTaskPageState extends State<NewTaskPage> {
       createdAt: now,
       dueAt: dueAt!,
       color: selectedColor,
+      isSynced: false,
+      isDeleted: false,
     );
 
     if (task != null) {
@@ -253,7 +256,9 @@ class _NewTaskPageState extends State<NewTaskPage> {
   }
 
   Future<void> _deleteTask() async {
-    if (task == null) {
+    final currentTask = task;
+
+    if (currentTask == null) {
       return;
     }
 
@@ -282,7 +287,9 @@ class _NewTaskPageState extends State<NewTaskPage> {
     if (shouldDelete != true || !mounted) {
       return;
     }
+
     FocusScope.of(context).unfocus();
-    context.read<TaskMutationCubit>().deleteTask(task!.id);
+
+    await context.read<TaskMutationCubit>().deleteTask(currentTask);
   }
 }

@@ -15,9 +15,11 @@ class TasksCubit extends Cubit<TasksState> {
 
   String get token {
     final token = SpService.getToken();
+
     if (token == null || token.isEmpty) {
       throw Exception('Authentication token not found');
     }
+
     return token;
   }
 
@@ -25,16 +27,80 @@ class TasksCubit extends Cubit<TasksState> {
     emit(const TasksLoading());
 
     try {
-      final tasks = await taskRemoteRepository.getTasks(token: token);
+      // Load from local DB first.
+      final tasks = await taskLocalRepository.getTasks();
 
       emit(TasksLoaded(tasks));
+
+      // Sync local changes to remote in background.
+      _syncTasks();
     } catch (error) {
       emit(TaskListError(error.toString()));
     }
   }
 
+  Future<void> _syncTasks() async {
+    try {
+      final unsyncedTasks = await taskLocalRepository.getUnsyncedTasks();
+
+      for (final task in unsyncedTasks) {
+        try {
+          if (task.isDeleted) {
+            await taskRemoteRepository.deleteTask(id: task.id, token: token);
+
+            await taskLocalRepository.deleteTask(task.id);
+
+            _removeTaskFromState(task.id);
+          } else {
+            await taskRemoteRepository.updateTask(task: task, token: token);
+
+            await taskLocalRepository.markAsSynced(task.id);
+
+            _markTaskAsSynced(task.id);
+          }
+        } catch (_) {
+          // Keep unsynced.
+        }
+      }
+    } catch (_) {
+      // Ignore background sync errors.
+    }
+  }
+
   Future<void> refresh() async {
     await loadTasks();
+  }
+
+  void _removeTaskFromState(String taskId) {
+    final currentState = state;
+
+    if (currentState is! TasksLoaded) {
+      return;
+    }
+
+    final tasks = currentState.tasks
+        .where((task) => task.id != taskId)
+        .toList();
+
+    emit(TasksLoaded(tasks));
+  }
+
+  void _markTaskAsSynced(String taskId) {
+    final currentState = state;
+
+    if (currentState is! TasksLoaded) {
+      return;
+    }
+
+    final tasks = currentState.tasks.map((task) {
+      if (task.id == taskId) {
+        return task.copyWith(isSynced: true);
+      }
+
+      return task;
+    }).toList();
+
+    emit(TasksLoaded(tasks));
   }
 
   void addTask(TaskModel task) {
