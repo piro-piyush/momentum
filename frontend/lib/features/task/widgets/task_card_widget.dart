@@ -209,6 +209,29 @@ class TaskCardWidget extends StatelessWidget {
             ),
           ),
         ),
+        // Row(
+        //   mainAxisSize: MainAxisSize.min,
+        //   children: [
+        //     Container(
+        //       height: 10,
+        //       width: 10,
+        //       decoration: BoxDecoration(
+        //         color: strengthenColor(task.color, 0.69),
+        //         shape: BoxShape.circle,
+        //       ),
+        //     ),
+        //     Padding(
+        //       padding: const EdgeInsets.all(12.0),
+        //       child: Text(
+        //         task.formatDueTime,
+        //         style: theme.textTheme.bodyLarge?.copyWith(
+        //           fontWeight: FontWeight.w600,
+        //           color: theme.colorScheme.onSurface,
+        //         ),
+        //       ),
+        //     ),
+        //   ],
+        // ),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -222,12 +245,25 @@ class TaskCardWidget extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Text(
-                task.formatDueTime,
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: theme.colorScheme.onSurface,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 6,
+                children: [
+                  Icon(
+                    task.isSynced
+                        ? Icons.cloud_done_outlined
+                        : Icons.cloud_upload_outlined,
+                    size: 18,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  Text(
+                    task.formatDueTime,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

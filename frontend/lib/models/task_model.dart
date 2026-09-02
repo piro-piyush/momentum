@@ -10,6 +10,7 @@ class TaskModel {
   final DateTime? updatedAt;
   final DateTime dueAt;
   final bool isSynced;
+  final bool isDeleted;
 
   const TaskModel({
     required this.id,
@@ -19,7 +20,8 @@ class TaskModel {
     this.updatedAt,
     required this.dueAt,
     required this.color,
-    this.isSynced = false,
+    required this.isSynced,
+    required this.isDeleted,
   });
 
   TaskModel copyWith({
@@ -31,6 +33,7 @@ class TaskModel {
     DateTime? dueAt,
     Color? color,
     bool? isSynced,
+    bool? isDeleted,
   }) {
     return TaskModel(
       id: id ?? this.id,
@@ -41,6 +44,7 @@ class TaskModel {
       dueAt: dueAt ?? this.dueAt,
       color: color ?? this.color,
       isSynced: isSynced ?? this.isSynced,
+      isDeleted: isDeleted ?? this.isDeleted,
     );
   }
 
@@ -55,6 +59,7 @@ class TaskModel {
       'dueAt': dueAt.toIso8601String(),
       'hexColor': rgbToHex(color),
       'isSynced': isSynced ? 1 : 0,
+      'isDeleted': isDeleted ? 1 : 0,
     };
   }
 
@@ -81,6 +86,7 @@ class TaskModel {
       dueAt: DateTime.parse(json['dueAt'] as String).toLocal(),
       color: hexToRgb(json['hexColor'] as String),
       isSynced: json['isSynced'] == 1,
+      isDeleted: json['isDeleted'] == 1,
     );
   }
 
@@ -97,6 +103,7 @@ class TaskModel {
         dueAt: DateTime.parse(json['dueAt'] as String).toLocal(),
         color: hexToRgb(json['color'] as String),
         isSynced: true,
+        isDeleted: false,
       );
     } catch (e) {
       rethrow;

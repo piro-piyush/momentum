@@ -8,7 +8,12 @@ class TaskLocalRepository {
   static const String _tableName = 'tasks';
 
   Future<List<TaskModel>> getTasks() async {
-    final result = await _db.query(_tableName, orderBy: 'created_at DESC');
+    final result = await _db.query(
+      _tableName,
+      where: 'is_deleted = ?',
+      whereArgs: [0],
+      orderBy: 'created_at DESC',
+    );
 
     return result.map(TaskModel.fromLocalJson).toList();
   }
@@ -26,17 +31,6 @@ class TaskLocalRepository {
     }
 
     return TaskModel.fromLocalJson(result.first);
-  }
-
-  Future<List<TaskModel>> getTasksByUser(String uid) async {
-    final result = await _db.query(
-      _tableName,
-      where: 'uid = ?',
-      whereArgs: [uid],
-      orderBy: 'created_at DESC',
-    );
-
-    return result.map(TaskModel.fromLocalJson).toList();
   }
 
   Future<List<TaskModel>> getUnsyncedTasks() async {
@@ -87,6 +81,15 @@ class TaskLocalRepository {
     );
   }
 
+  Future<int> markAsDeleted(TaskModel task) async {
+    return _db.update(
+      _tableName,
+      task.toLocalJson(),
+      where: 'id = ?',
+      whereArgs: [task.id],
+    );
+  }
+
   Future<int> markAsSynced(String id) async {
     return _db.update(
       _tableName,
@@ -100,30 +103,16 @@ class TaskLocalRepository {
     return _db.delete(_tableName, where: 'id = ?', whereArgs: [id]);
   }
 
-  Future<int> deleteTasksByUser(String uid) async {
-    return _db.delete(_tableName, where: 'uid = ?', whereArgs: [uid]);
-  }
-
   Future<int> clearTasks() async {
     return _db.delete(_tableName);
   }
 
-  Future<bool> taskExists(String id) async {
-    final result = await _db.query(
-      _tableName,
-      columns: ['id'],
-      where: 'id = ?',
-      whereArgs: [id],
-      limit: 1,
-    );
-
-    return result.isNotEmpty;
-  }
-
   Future<int> getTaskCount() async {
-    final result = await _db.rawQuery(
-      'SELECT COUNT(*) AS count FROM $_tableName',
-    );
+    final result = await _db.rawQuery('''
+      SELECT COUNT(*) AS count
+      FROM $_tableName
+      WHERE is_deleted = 0
+      ''');
 
     return Sqflite.firstIntValue(result) ?? 0;
   }
