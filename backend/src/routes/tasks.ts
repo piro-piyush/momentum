@@ -28,6 +28,7 @@ const tasksRouter = Router();
 // -----------------------------------------------------------------------------
 
 tasksRouter.get("/", authenticate, getTasks);
+tasksRouter.get("/sync", authenticate, getTasks);
 tasksRouter.get("/:id", authenticate, getTask);
 tasksRouter.post("/", authenticate, createTask);
 tasksRouter.patch("/:id", authenticate, updateTask);

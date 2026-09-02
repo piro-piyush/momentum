@@ -31,12 +31,13 @@ class TasksCubit extends Cubit<TasksState> {
       final localTasks = await taskLocalRepository.getTasks();
 
       emit(TasksLoaded(localTasks));
+      if (await ConnectivityService.instance.isConnected) {
+        // 2. Fetch remote tasks in background.
+        await _fetchRemoteTasks();
 
-      // 2. Fetch remote tasks in background.
-      await _fetchRemoteTasks();
-
-      // 3. Sync any local pending changes.
-      await _syncTasks();
+        // 3. Sync any local pending changes.
+        await _syncTasks();
+      }
     } catch (error) {
       emit(TaskListError(error.toString()));
     }

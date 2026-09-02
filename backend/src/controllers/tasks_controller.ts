@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import type { Request, Response } from "express";
 import { z } from "zod";
 import { HttpStatus } from "../constants/http-status.js";
@@ -8,6 +8,7 @@ import { ApiResponse } from "../utils/api-response.js";
 import { logger } from "../utils/logger.js";
 import {
     createTaskSchema,
+    syncTasksSchema,
     updateTaskSchema,
 } from "../validation/task.schema.js";
 
@@ -138,7 +139,7 @@ export const createTask = async (
             uid: req.userId!,
             title: data.title,
             description: data.description,
-            color: data.color,
+
             dueAt: data.dueAt,
 
         };
@@ -337,6 +338,101 @@ export const deleteTask = async (
                 "Failed to delete task",
                 error,
             ),
+        );
+    }
+};
+
+export const syncTasks = async (
+    req: Request,
+    res: Response,
+): Promise<void> => {
+    try {
+        const userId = req.userId;
+
+        if (!userId) {
+            res.status(HttpStatus.UNAUTHORIZED).json(
+                ApiResponse.error("Unauthorized"),
+            );
+            return;
+        }
+
+        const result = syncTasksSchema.safeParse(req.body);
+
+        if (!result.success) {
+            res.status(HttpStatus.BAD_REQUEST).json(
+                ApiResponse.error(
+                    "Invalid sync payload",
+                    z.treeifyError(result.error),
+                ),
+            );
+            return;
+        }
+
+        const { tasks: localTasks } = result.data;
+
+        await db.transaction(async (tx) => {
+            for (const localTask of localTasks) {
+                // New task
+                if (localTask.isNew) {
+                    await tx.insert(tasks).values({
+                        id: localTask.id,
+                        uid: userId,
+                        title: localTask.title,
+                        description: localTask.description ?? null,
+                        createdAt: localTask.createdAt,
+                        updatedAt: localTask.updatedAt ?? localTask.createdAt,
+                        dueAt: localTask.dueAt,
+                    });
+
+                    continue;
+                }
+
+                // Deleted task
+                if (localTask.isDeleted) {
+                    await tx
+                        .delete(tasks)
+                        .where(
+                            and(
+                                eq(tasks.id, localTask.id),
+                                eq(tasks.uid, userId),
+                            ),
+                        );
+
+                    continue;
+                }
+
+                // Updated task
+                await tx
+                    .update(tasks)
+                    .set({
+                        title: localTask.title,
+                        description: localTask.description ?? null,
+                        dueAt: localTask.dueAt,
+                        updatedAt: localTask.updatedAt ?? new Date(),
+                    })
+                    .where(
+                        and(
+                            eq(tasks.id, localTask.id),
+                            eq(tasks.uid, userId),
+                        ),
+                    );
+            }
+        });
+
+        // Get the latest version of the user's tasks
+        const updatedTasks = await db
+            .select()
+            .from(tasks)
+            .where(eq(tasks.uid, userId));
+
+        res.status(HttpStatus.OK).json(
+            ApiResponse.success("Task Synced success", updatedTasks,),
+        );
+    } catch (error) {
+        logger.error("Failed to sync tasks", error);
+
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(
+            ApiResponse.error("Failed to sync tasks"),
         );
     }
 };
