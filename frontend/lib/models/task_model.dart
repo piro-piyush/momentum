@@ -88,7 +88,9 @@ class TaskModel {
         title: json['title'] as String,
         description: json['description'] as String,
         createdAt: DateTime.parse(json['createdAt'] as String).toLocal(),
-        updatedAt: DateTime.parse(json['updatedAt'] as String).toLocal(),
+        updatedAt: json['updatedAt'] != null
+            ? DateTime.parse(json['updatedAt'] as String).toLocal()
+            : null,
         dueAt: DateTime.parse(json['dueAt'] as String).toLocal(),
         color: hexToRgb(json['color'] as String),
         isSynced: json['isSynced'] == 1,

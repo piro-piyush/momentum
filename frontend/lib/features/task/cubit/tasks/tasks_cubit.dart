@@ -27,15 +27,33 @@ class TasksCubit extends Cubit<TasksState> {
     emit(const TasksLoading());
 
     try {
-      // Load from local DB first.
+      // 1. Load local tasks first.
+      final localTasks = await taskLocalRepository.getTasks();
+
+      emit(TasksLoaded(localTasks));
+
+      // 2. Fetch remote tasks in background.
+      await _fetchRemoteTasks();
+
+      // 3. Sync any local pending changes.
+      await _syncTasks();
+    } catch (error) {
+      emit(TaskListError(error.toString()));
+    }
+  }
+
+  Future<void> _fetchRemoteTasks() async {
+    try {
+      final remoteTasks = await taskRemoteRepository.getTasks(token: token);
+
+      await taskLocalRepository.saveTasks(remoteTasks);
+
+      // Read the final data from local DB.
       final tasks = await taskLocalRepository.getTasks();
 
       emit(TasksLoaded(tasks));
-
-      // Sync local changes to remote in background.
-      _syncTasks();
-    } catch (error) {
-      emit(TaskListError(error.toString()));
+    } catch (_) {
+      // Keep showing local tasks if remote is unavailable.
     }
   }
 
