@@ -98,92 +98,11 @@ class ProfilePage extends StatelessWidget {
 
                     const SizedBox(height: 32),
 
-                    Text(
-                      'Your tasks',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: StatCardWidget(
-                            icon: Icons.task_alt_rounded,
-                            value: '$totalTasks',
-                            label: 'Total tasks',
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: StatCardWidget(
-                            icon: Icons.today_rounded,
-                            value: '$todayTasks',
-                            label: 'Today',
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: StatCardWidget(
-                            icon: Icons.pending_actions_rounded,
-                            value: '$pendingTasks',
-                            label: 'Upcoming',
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: StatCardWidget(
-                            icon: Icons.warning_amber_rounded,
-                            value: '$overdueTasks',
-                            label: 'Overdue',
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 32),
-
-                    Text(
-                      'Overview',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'You have $totalTasks tasks',
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              '$todayTasks scheduled for today • '
-                              '$pendingTasks upcoming • '
-                              '$overdueTasks overdue',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    YourTasksWidget(
+                      overdueTasks: overdueTasks,
+                      todayTasks: todayTasks,
+                      totalTasks: totalTasks,
+                      pendingTasks: pendingTasks,
                     ),
 
                     const SizedBox(height: 32),

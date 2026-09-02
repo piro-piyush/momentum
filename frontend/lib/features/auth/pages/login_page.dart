@@ -198,10 +198,18 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _login() {
+  void _login() async {
     FocusScope.of(context).unfocus();
 
     if (!formKey.currentState!.validate()) {
+      return;
+    }
+
+    if (!(await ConnectivityService.instance.isConnected)) {
+      SnackBarUtils.error(
+        context,
+        'No internet connection. Please check your network.',
+      );
       return;
     }
 

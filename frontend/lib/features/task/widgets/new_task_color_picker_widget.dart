@@ -35,6 +35,7 @@ class NewTaskColorPickerWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       onColorChanged: onColorSelected,
       color: selectedColor,
+
       // pickersEnabled: {ColorPickerType.wheel: true},
     );
   }

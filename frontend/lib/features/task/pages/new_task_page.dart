@@ -15,7 +15,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
 
   DateTime? dueAt;
 
-  Color selectedColor = const Color.fromRGBO(246, 222, 194, 1);
+  // Color selectedColor = Colors.blue;
   TaskModel? task;
 
   @override
@@ -42,7 +42,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
       titleController.text = argument.title;
       descriptionController.text = argument.description;
       dueAt = argument.dueAt;
-      selectedColor = argument.color;
+      // selectedColor = argument.color;
     }
   }
 
@@ -88,92 +88,269 @@ class _NewTaskPageState extends State<NewTaskPage> {
       },
       builder: (context, state) {
         final isLoading = state is TaskMutationLoading;
+        final theme = Theme.of(context);
+
+        final isDark = theme.brightness == Brightness.dark;
+
+        final backgroundColor = isDark
+            ? const Color(0xFF0A0A0A)
+            : const Color(0xFFF8F8F8);
+
+        final fieldColor = isDark ? const Color(0xFF141414) : Colors.white;
+
+        final foregroundColor = isDark ? Colors.white : const Color(0xFF111111);
+
+        final mutedColor = isDark
+            ? const Color(0xFF9A9A9A)
+            : const Color(0xFF6B6B6B);
+
+        final borderColor = isDark
+            ? const Color(0xFF292929)
+            : const Color(0xFFE5E5E5);
         return Scaffold(
+          backgroundColor: backgroundColor,
           appBar: AppBar(
+            backgroundColor: backgroundColor,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
             title: Text(
-              isEditing ? 'Update Task' : 'New task',
-              style: TextStyle(fontWeight: FontWeight.w700),
+              isEditing ? 'Update Task' : 'New Task',
+              style: TextStyle(
+                color: foregroundColor,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.3,
+              ),
             ),
             centerTitle: true,
+            leading: IconButton(
+              onPressed: isLoading ? null : () => Navigator.pop(context),
+              icon: Icon(Icons.close_rounded, color: foregroundColor),
+            ),
             actions: [
               if (isEditing)
                 IconButton(
                   onPressed: isLoading ? null : _deleteTask,
-                  icon: const Icon(Icons.delete_outline),
+                  tooltip: 'Delete task',
+                  icon: Icon(
+                    Icons.delete_outline_rounded,
+                    color: foregroundColor,
+                  ),
                 ),
-              TextButton(
-                onPressed: isLoading ? null : _saveTask,
-                child: isLoading
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : Text(isEditing ? 'Update' : 'Save'),
+
+              const SizedBox(width: 4),
+
+              Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: FilledButton(
+                  onPressed: () {
+                    isLoading ? null : _saveTask();
+                  },
+                  style: FilledButton.styleFrom(
+                    backgroundColor: foregroundColor,
+                    foregroundColor: isDark ? Colors.black : Colors.white,
+                    disabledBackgroundColor: foregroundColor.withValues(
+                      alpha: 0.4,
+                    ),
+                    disabledForegroundColor: isDark
+                        ? Colors.black54
+                        : Colors.white70,
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    minimumSize: const Size(0, 40),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: isLoading
+                      ? SizedBox(
+                          width: 17,
+                          height: 17,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: isDark ? Colors.black : Colors.white,
+                          ),
+                        )
+                      : Text(
+                          isEditing ? 'Update' : 'Save',
+                          style: const TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                ),
               ),
-              const SizedBox(width: 8),
             ],
           ),
+
           body: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
             child: Form(
               key: formKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    spacing: 12,
-                    children: [
-                      TextFormField(
-                        controller: titleController,
-                        textInputAction: TextInputAction.next,
-                        decoration: const InputDecoration(
-                          hintText: 'Task title',
-                        ),
-                        validator: (value) {
-                          return ValidatorUtils.required(
-                            value,
-                            fieldName: 'Title',
-                          );
-                        },
-                      ),
+                  // ------------------------------------------------------------
+                  // Task details
+                  // ------------------------------------------------------------
 
-                      TextFormField(
-                        controller: descriptionController,
-                        keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.newline,
-                        minLines: 5,
-                        maxLines: 10,
-                        decoration: const InputDecoration(
-                          hintText: 'Add a description...(Optional)',
+                  Text(
+                    'TASK DETAILS',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: mutedColor,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  Container(
+                    decoration: BoxDecoration(
+                      color: fieldColor,
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(color: borderColor),
+                      boxShadow: [
+                        if (!isDark)
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.035),
+                            blurRadius: 20,
+                            offset: const Offset(0, 6),
+                          ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: titleController,
+                          textInputAction: TextInputAction.next,
+                          style: TextStyle(
+                            color: foregroundColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          cursorColor: foregroundColor,
+                          decoration: InputDecoration(
+                            hintText: 'Task title',
+                            hintStyle: TextStyle(
+                              color: mutedColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            prefixIcon: Icon(
+                              Icons.check_circle_outline_rounded,
+                              color: mutedColor,
+                              size: 21,
+                            ),
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            focusedErrorBorder: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 18,
+                              vertical: 18,
+                            ),
+                          ),
+                          validator: (value) {
+                            return ValidatorUtils.required(
+                              value,
+                              fieldName: 'Title',
+                            );
+                          },
                         ),
-                      ),
-                    ],
+
+                        Divider(
+                          height: 1,
+                          indent: 18,
+                          endIndent: 18,
+                          color: borderColor,
+                        ),
+
+                        TextFormField(
+                          controller: descriptionController,
+                          keyboardType: TextInputType.multiline,
+                          textInputAction: TextInputAction.newline,
+                          minLines: 5,
+                          maxLines: 10,
+                          style: TextStyle(
+                            color: foregroundColor,
+                            fontSize: 15,
+                            height: 1.5,
+                          ),
+                          cursorColor: foregroundColor,
+                          decoration: InputDecoration(
+                            hintText: 'Add a description... (Optional)',
+                            hintStyle: TextStyle(
+                              color: mutedColor,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            // prefixIcon: Padding(
+                            //   padding: const EdgeInsets.only(
+                            //     left: 18,
+                            //     right: 10,
+                            //     top: 18,
+                            //   ),
+                            //   child: Icon(
+                            //     Icons.notes_rounded,
+                            //     color: mutedColor,
+                            //     size: 21,
+                            //   ),
+                            // ),
+                            prefixIconConstraints: const BoxConstraints(
+                              minWidth: 0,
+                              minHeight: 0,
+                            ),
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            contentPadding: const EdgeInsets.fromLTRB(
+                              18,
+                              18,
+                              18,
+                              18,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
 
                   const SizedBox(height: 32),
 
+                  // ------------------------------------------------------------
                   // Due date
-                  NewTaskDatePickerWidget(
-                    dueAt: dueAt,
+                  // ------------------------------------------------------------
+                  ScheduleDatePickerWidget(
                     onPressed: _pickDueDate,
+                    dueAt: dueAt,
                     onClear: () {
                       setState(() {
                         dueAt = null;
                       });
                     },
                   ),
-
                   const SizedBox(height: 28),
 
+                  // ------------------------------------------------------------
                   // Color
-                  NewTaskColorPickerWidget(
-                    selectedColor: selectedColor,
-                    onColorSelected: (color) {
-                      setState(() {
-                        selectedColor = color;
-                      });
-                    },
-                  ),
+                  // ------------------------------------------------------------
+                  // Text(
+                  //   'APPEARANCE',
+                  //   style: theme.textTheme.labelSmall?.copyWith(
+                  //     color: mutedColor,
+                  //     fontWeight: FontWeight.w700,
+                  //     letterSpacing: 1.2,
+                  //   ),
+                  // ),
+                  //
+                  // const SizedBox(height: 10),
+                  //
+                  // NewTaskColorPickerWidget(
+                  //   selectedColor: selectedColor,
+                  //   onColorSelected: (color) {
+                  //     setState(() {
+                  //       selectedColor = color;
+                  //     });
+                  //   },
+                  // ),
+                  //
+                  // const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -231,7 +408,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
       title: titleController.text.trim(),
       description: descriptionController.text.trim(),
       dueAt: dueAt!,
-      color: selectedColor,
+      // color: selectedColor,
       updatedAt: now,
       isSynced: false,
       isDeleted: false,
@@ -243,7 +420,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
       description: descriptionController.text.trim(),
       createdAt: now,
       dueAt: dueAt!,
-      color: selectedColor,
+      // color: selectedColor,
       isSynced: false,
       isDeleted: false,
       isNew: true,
