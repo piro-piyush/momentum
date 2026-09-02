@@ -1,37 +1,72 @@
-part of 'task_mutation_state.dart';
+import 'package:momentum/lib.dart';
 
-sealed class TaskMutationState {
-  const TaskMutationState();
-}
+part 'task_mutation_state.dart';
 
-final class TaskMutationInitial extends TaskMutationState {
-  const TaskMutationInitial();
-}
+class TaskMutationCubit extends Cubit<TaskMutationState> {
+  TaskMutationCubit({
+    required this.taskLocalRepository,
+    required this.taskRemoteRepository,
+  }) : super(const TaskMutationInitial());
 
-final class TaskMutationLoading extends TaskMutationState {
-  const TaskMutationLoading();
-}
+  final TaskLocalRepository taskLocalRepository;
+  final TaskRemoteRepository taskRemoteRepository;
 
-final class TaskCreated extends TaskMutationState {
-  const TaskCreated(this.task);
+  String get token {
+    final token = SpService.getToken();
+    if (token == null || token.isEmpty) {
+      throw Exception('Authentication token not found');
+    }
+    return token;
+  }
 
-  final TaskModel task;
-}
+  Future<void> createTask(TaskModel task) async {
+    emit(const TaskMutationLoading());
 
-final class TaskUpdated extends TaskMutationState {
-  const TaskUpdated(this.task);
+    try {
+      await taskRemoteRepository.createTask(task: task, token: token);
 
-  final TaskModel task;
-}
+      emit(TaskCreated(task));
+    } catch (error) {
+      emit(TaskMutationError(error.toString()));
+    }
+  }
 
-final class TaskDeleted extends TaskMutationState {
-  const TaskDeleted(this.taskId);
+  Future<void> updateTask(TaskModel task) async {
+    emit(const TaskMutationLoading());
 
-  final String taskId;
-}
+    try {
+      final token = SpService.getToken();
 
-final class TaskMutationError extends TaskMutationState {
-  const TaskMutationError(this.message);
+      if (token == null || token.isEmpty) {
+        throw Exception('Authentication token not found');
+      }
+      final updatedTask = task.copyWith(
+        updatedAt: DateTime.now(),
+        isSynced: false,
+      );
 
-  final String message;
+      await taskRemoteRepository.updateTask(task: updatedTask, token: token);
+
+      emit(TaskUpdated(updatedTask));
+    } catch (error) {
+      emit(TaskMutationError(error.toString()));
+    }
+  }
+
+  Future<void> deleteTask(String taskId) async {
+    emit(const TaskMutationLoading());
+
+    try {
+      final token = SpService.getToken();
+
+      if (token == null || token.isEmpty) {
+        throw Exception('Authentication token not found');
+      }
+      await taskRemoteRepository.deleteTask(id: taskId, token: token);
+
+      emit(TaskDeleted(taskId));
+    } catch (error) {
+      emit(TaskMutationError(error.toString()));
+    }
+  }
 }

@@ -19,7 +19,7 @@ class TaskModel {
     this.updatedAt,
     required this.dueAt,
     required this.color,
-    required this.isSynced,
+    this.isSynced = false,
   });
 
   TaskModel copyWith({
@@ -106,20 +106,6 @@ class TaskModel {
   String get formatDueTime => DateFormat('h:mm a').format(dueAt);
 
   @override
-  String toString() {
-    return 'TaskModel('
-        'id: $id, '
-        'title: $title, '
-        'description: $description, '
-        'createdAt: $createdAt, '
-        'updatedAt: $updatedAt, '
-        'dueAt: $dueAt, '
-        'color: $color, '
-        'isSynced: $isSynced'
-        ')';
-  }
-
-  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         other is TaskModel &&
@@ -137,7 +123,6 @@ class TaskModel {
   int get hashCode {
     return Object.hash(
       id,
-
       title,
       description,
       createdAt,
@@ -147,95 +132,4 @@ class TaskModel {
       isSynced,
     );
   }
-
-  static final List<TaskModel> list = <TaskModel>[
-    TaskModel(
-      id: 'task-001',
-
-      title: 'Fix login validation',
-      description: 'Handle invalid credentials, network errors, and loading states on the login screen.',
-      createdAt: DateTime.now().subtract(const Duration(days: 3)),
-      updatedAt: DateTime.now().subtract(const Duration(hours: 2)),
-      dueAt: DateTime.now().add(const Duration(hours: 2)),
-      color: Colors.red,
-      isSynced: true,
-    ),
-    TaskModel(
-      id: 'task-002',
-
-      title: 'Review pull request',
-      description: 'Review the authentication changes and leave feedback before merging.',
-      createdAt: DateTime.now().subtract(const Duration(days: 1)),
-      updatedAt: DateTime.now().subtract(const Duration(hours: 5)),
-      dueAt: DateTime.now().add(const Duration(hours: 5)),
-      color: Colors.blue,
-      isSynced: true,
-    ),
-    TaskModel(
-      id: 'task-003',
-
-      title: 'Study DBMS',
-      description: 'Revise normalization, transactions, ACID properties, and concurrency control.',
-      createdAt: DateTime.now().subtract(const Duration(days: 4)),
-      updatedAt: DateTime.now().subtract(const Duration(days: 1)),
-      dueAt: DateTime.now().add(const Duration(hours: 8)),
-      color: Colors.orange,
-      isSynced: true,
-    ),
-    TaskModel(
-      id: 'task-004',
-
-      title: 'Prepare MCA notes',
-      description: 'Complete notes for the next unit and organize important exam questions.',
-      createdAt: DateTime.now().subtract(const Duration(days: 2)),
-      updatedAt: DateTime.now().subtract(const Duration(hours: 3)),
-      dueAt: DateTime.now().add(const Duration(days: 1)),
-      color: Colors.purple,
-      isSynced: false,
-    ),
-    TaskModel(
-      id: 'task-005',
-
-      title: 'Plan tomorrow',
-      description: 'Review unfinished tasks and decide the top three priorities for tomorrow.',
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      dueAt: DateTime.now().add(const Duration(days: 1)),
-      color: Colors.green,
-      isSynced: false,
-    ),
-    TaskModel(
-      id: 'task-006',
-
-      title: 'Update project documentation',
-      description: 'Document the API endpoints, authentication flow, and local database setup.',
-      createdAt: DateTime.now().subtract(const Duration(days: 6)),
-      updatedAt: DateTime.now().subtract(const Duration(days: 2)),
-      dueAt: DateTime.now().add(const Duration(days: 3)),
-      color: Colors.indigo,
-      isSynced: true,
-    ),
-    TaskModel(
-      id: 'task-007',
-
-      title: 'Clean up Flutter code',
-      description: 'Remove unused imports, simplify duplicated logic, and fix analyzer warnings.',
-      createdAt: DateTime.now().subtract(const Duration(days: 5)),
-      updatedAt: DateTime.now().subtract(const Duration(days: 1)),
-      dueAt: DateTime.now().add(const Duration(days: 4)),
-      color: Colors.teal,
-      isSynced: true,
-    ),
-    TaskModel(
-      id: 'task-008',
-
-      title: 'Backup important files',
-      description: 'Back up the current project, environment configuration, and important documents.',
-      createdAt: DateTime.now().subtract(const Duration(days: 2)),
-      updatedAt: DateTime.now().subtract(const Duration(hours: 6)),
-      dueAt: DateTime.now().add(const Duration(days: 5)),
-      color: Colors.brown,
-      isSynced: false,
-    ),
-  ];
 }

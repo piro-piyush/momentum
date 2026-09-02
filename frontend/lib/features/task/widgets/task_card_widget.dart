@@ -151,16 +151,12 @@ import 'package:momentum/lib.dart';
 class TaskCardWidget extends StatelessWidget {
   const TaskCardWidget({
     super.key,
-    required this.color,
-    required this.title,
-    required this.description,
-    required this.dueDate,
+    // required this.color,
+    required this.task,
   });
 
-  final Color color;
-  final String title;
-  final String description;
-  final String dueDate;
+  // final Color color;
+  final TaskModel task;
 
   @override
   Widget build(BuildContext context) {
@@ -170,32 +166,37 @@ class TaskCardWidget extends StatelessWidget {
       spacing: 8,
       children: [
         Expanded(
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 4,
-              children: [
-                Text(
-                  title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, AppRoutes.newTask, arguments: task);
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: task.color,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 4,
+                children: [
+                  Text(
+                    task.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                ),
-                Text(
-                  description,
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium,
-                ),
-              ],
+                  Text(
+                    task.description,
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -206,13 +207,16 @@ class TaskCardWidget extends StatelessWidget {
               height: 10,
               width: 10,
               decoration: BoxDecoration(
-                color: strengthenColor(color, 0.69),
+                color: strengthenColor(task.color, 0.69),
                 shape: BoxShape.circle,
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Text(dueDate, style: const TextStyle(fontSize: 17)),
+              child: Text(
+                task.formatDueTime,
+                style: const TextStyle(fontSize: 17),
+              ),
             ),
           ],
         ),
