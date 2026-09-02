@@ -18,12 +18,13 @@ class DateSelectorWidget extends StatefulWidget {
 
 class _DateSelectorWidgetState extends State<DateSelectorWidget> {
   late DateTime selectedDate;
-  int weekOffset = 0;
+  int monthOffset = 0;
 
   @override
   void initState() {
     super.initState();
     selectedDate = widget.selectedDate;
+    monthOffset = _calculateMonthOffset(selectedDate);
   }
 
   @override
@@ -32,56 +33,94 @@ class _DateSelectorWidgetState extends State<DateSelectorWidget> {
 
     if (oldWidget.selectedDate != widget.selectedDate) {
       selectedDate = widget.selectedDate;
+      monthOffset = _calculateMonthOffset(selectedDate);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final weekDates = generateWeekDates(weekOffset);
-    final monthName = DateFormat('MMMM').format(weekDates.first);
+    final monthDates = generateMonthDates(monthOffset);
+    final monthName = DateFormat('MMMM yyyy').format(monthDates.first);
+
+    final today = DateTime.now();
+    final isCurrentMonth =
+        today.year == monthDates.first.year &&
+        today.month == monthDates.first.month;
 
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
                 onPressed: () {
-                  setState(() {
-                    weekOffset--;
-                  });
+                  _changeMonth(-1);
                 },
                 icon: const Icon(Icons.arrow_back_ios),
               ),
-              Text(monthName, style: theme.textTheme.headlineSmall),
+              Expanded(
+                child: Center(
+                  child: Text(monthName, style: theme.textTheme.headlineSmall),
+                ),
+              ),
               IconButton(
                 onPressed: () {
-                  setState(() {
-                    weekOffset++;
-                  });
+                  _changeMonth(1);
                 },
                 icon: const Icon(Icons.arrow_forward_ios),
               ),
             ],
           ),
         ),
+
+        // Today button
+        if (!isCurrentMonth)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: OutlinedButton(
+              onPressed: _goToToday,
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                side: BorderSide(color: theme.colorScheme.outlineVariant),
+              ),
+              child: Text(
+                'Go to Today',
+                style: theme.textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: SizedBox(
             height: 80,
             child: ListView.builder(
-              itemCount: weekDates.length,
+              itemCount: monthDates.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
-                final date = weekDates[index];
+                final date = monthDates[index];
 
                 final isSelected =
                     selectedDate.year == date.year &&
                     selectedDate.month == date.month &&
                     selectedDate.day == date.day;
+
+                final isToday =
+                    today.year == date.year &&
+                    today.month == date.month &&
+                    today.day == date.day;
 
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
@@ -108,7 +147,10 @@ class _DateSelectorWidgetState extends State<DateSelectorWidget> {
                           border: isSelected
                               ? null
                               : Border.all(
-                                  color: theme.colorScheme.outlineVariant,
+                                  color: isToday
+                                      ? Colors.deepOrangeAccent
+                                      : theme.colorScheme.outlineVariant,
+                                  width: isToday ? 1.5 : 1,
                                 ),
                         ),
                         child: Column(
@@ -145,5 +187,34 @@ class _DateSelectorWidgetState extends State<DateSelectorWidget> {
         ),
       ],
     );
+  }
+
+  void _changeMonth(int value) {
+    final newOffset = monthOffset + value;
+    final dates = generateMonthDates(newOffset);
+
+    setState(() {
+      monthOffset = newOffset;
+      selectedDate = dates.first;
+    });
+
+    widget.onDateSelected(selectedDate);
+  }
+
+  void _goToToday() {
+    final today = DateTime.now();
+
+    setState(() {
+      monthOffset = 0;
+      selectedDate = today;
+    });
+
+    widget.onDateSelected(today);
+  }
+
+  int _calculateMonthOffset(DateTime date) {
+    final today = DateTime.now();
+
+    return (date.year - today.year) * 12 + date.month - today.month;
   }
 }

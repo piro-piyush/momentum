@@ -62,7 +62,8 @@ class DatabaseService {
       updatedAt TEXT,
       dueAt TEXT NOT NULL,
       isSynced INTEGER NOT NULL DEFAULT 0,
-      isDeleted INTEGER NOT NULL DEFAULT 0
+      isDeleted INTEGER NOT NULL DEFAULT 0,
+      isNew INTEGER NOT NULL DEFAULT 0
     )
   ''');
   }

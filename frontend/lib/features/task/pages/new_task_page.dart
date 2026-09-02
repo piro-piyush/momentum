@@ -246,6 +246,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
       color: selectedColor,
       isSynced: false,
       isDeleted: false,
+      isNew: true,
     );
 
     if (task != null) {
