@@ -8,6 +8,7 @@ authentication, and PostgreSQL persistence.
 <p align="center">
   <img src="screenshots\banner.png" alt="Momentum" width="100%">
 </p>
+
 ## Tech Stack
 
 ### Frontend
