@@ -27,10 +27,10 @@ const tasksRouter = Router();
 // Protected routes
 // -----------------------------------------------------------------------------
 
-tasksRouter.get("", authenticate, getTasks);
-tasksRouter.get(":id", authenticate, getTask);
-tasksRouter.post("", authenticate, createTask);
-tasksRouter.patch(":id", authenticate, updateTask);
-tasksRouter.delete(":id", authenticate, deleteTask);
+tasksRouter.get("/", authenticate, getTasks);
+tasksRouter.get("/:id", authenticate, getTask);
+tasksRouter.post("/", authenticate, createTask);
+tasksRouter.patch("/:id", authenticate, updateTask);
+tasksRouter.delete("/:id", authenticate, deleteTask);
 
 export default tasksRouter;

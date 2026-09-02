@@ -13,35 +13,67 @@ class TasksCubit extends Cubit<TasksState> {
   final TaskLocalRepository taskLocalRepository;
   final TaskRemoteRepository taskRemoteRepository;
 
+  String get token {
+    final token = SpService.getToken();
+    if (token == null || token.isEmpty) {
+      throw Exception('Authentication token not found');
+    }
+    return token;
+  }
+
   Future<void> loadTasks() async {
     emit(const TasksLoading());
 
     try {
-      final token = SpService.getToken();
-
-      if (token == null || token.isEmpty) {
-        throw Exception('Authentication token not found');
-      }
-
       final tasks = await taskRemoteRepository.getTasks(token: token);
-
-      // Cache the latest remote tasks locally.
-      // await taskLocalRepository.saveTasks(tasks);
 
       emit(TasksLoaded(tasks));
     } catch (error) {
-      // try {
-      // Fallback to locally cached tasks when remote fails.
-      // final tasks = await taskLocalRepository.getTasks();
-
-      // emit(TasksLoaded(tasks));
-      // } catch (localError) {
       emit(TaskListError(error.toString()));
-      // }
     }
   }
 
   Future<void> refresh() async {
     await loadTasks();
+  }
+
+  void addTask(TaskModel task) {
+    final currentState = state;
+
+    if (currentState is! TasksLoaded) {
+      return;
+    }
+
+    emit(TasksLoaded([task, ...currentState.tasks]));
+  }
+
+  void updateTask(TaskModel task) {
+    final currentState = state;
+
+    if (currentState is! TasksLoaded) {
+      return;
+    }
+
+    final tasks = currentState.tasks.map((currentTask) {
+      if (currentTask.id == task.id) {
+        return task;
+      }
+
+      return currentTask;
+    }).toList();
+
+    emit(TasksLoaded(tasks));
+  }
+
+  void deleteTask(String id) {
+    final currentState = state;
+
+    if (currentState is! TasksLoaded) {
+      return;
+    }
+
+    final tasks = currentState.tasks.where((task) => task.id != id).toList();
+
+    emit(TasksLoaded(tasks));
   }
 }

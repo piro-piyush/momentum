@@ -1,50 +1,37 @@
-import 'package:momentum/lib.dart';
+part of 'task_mutation_cubit.dart';
 
-part 'task_mutation_cubit.dart';
+sealed class TaskMutationState {
+  const TaskMutationState();
+}
 
-class TaskMutationCubit extends Cubit<TaskMutationState> {
-  TaskMutationCubit(this._repository) : super(const TaskMutationInitial());
+final class TaskMutationInitial extends TaskMutationState {
+  const TaskMutationInitial();
+}
 
-  final TaskLocalRepository _repository;
+final class TaskMutationLoading extends TaskMutationState {
+  const TaskMutationLoading();
+}
 
-  Future<void> createTask(TaskModel task) async {
-    emit(const TaskMutationLoading());
+final class TaskCreated extends TaskMutationState {
+  const TaskCreated(this.task);
 
-    try {
-      await _repository.saveTask(task);
+  final TaskModel task;
+}
 
-      emit(TaskCreated(task));
-    } catch (error) {
-      emit(TaskMutationError(error.toString()));
-    }
-  }
+final class TaskUpdated extends TaskMutationState {
+  const TaskUpdated(this.task);
 
-  Future<void> updateTask(TaskModel task) async {
-    emit(const TaskMutationLoading());
+  final TaskModel task;
+}
 
-    try {
-      final updatedTask = task.copyWith(
-        updatedAt: DateTime.now(),
-        isSynced: false,
-      );
+final class TaskDeleted extends TaskMutationState {
+  const TaskDeleted(this.taskId);
 
-      await _repository.updateTask(updatedTask);
+  final String taskId;
+}
 
-      emit(TaskUpdated(updatedTask));
-    } catch (error) {
-      emit(TaskMutationError(error.toString()));
-    }
-  }
+final class TaskMutationError extends TaskMutationState {
+  const TaskMutationError(this.message);
 
-  Future<void> deleteTask(String id) async {
-    emit(const TaskMutationLoading());
-
-    try {
-      await _repository.deleteTask(id);
-
-      emit(TaskDeleted(id));
-    } catch (error) {
-      emit(TaskMutationError(error.toString()));
-    }
-  }
+  final String message;
 }
