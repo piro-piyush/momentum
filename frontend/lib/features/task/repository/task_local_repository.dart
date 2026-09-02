@@ -10,9 +10,9 @@ class TaskLocalRepository {
   Future<List<TaskModel>> getTasks() async {
     final result = await _db.query(
       _tableName,
-      where: 'is_deleted = ?',
+      where: 'isDeleted = ?',
       whereArgs: [0],
-      orderBy: 'created_at DESC',
+      orderBy: 'createdAt DESC',
     );
 
     return result.map(TaskModel.fromLocalJson).toList();
@@ -36,9 +36,9 @@ class TaskLocalRepository {
   Future<List<TaskModel>> getUnsyncedTasks() async {
     final result = await _db.query(
       _tableName,
-      where: 'is_synced = ?',
+      where: 'isSynced = ?',
       whereArgs: [0],
-      orderBy: 'created_at ASC',
+      orderBy: 'createdAt ASC',
     );
 
     return result.map(TaskModel.fromLocalJson).toList();
@@ -93,7 +93,7 @@ class TaskLocalRepository {
   Future<int> markAsSynced(String id) async {
     return _db.update(
       _tableName,
-      {'is_synced': 1},
+      {'isSynced': 1, 'isNew': 0},
       where: 'id = ?',
       whereArgs: [id],
     );
@@ -111,7 +111,7 @@ class TaskLocalRepository {
     final result = await _db.rawQuery('''
       SELECT COUNT(*) AS count
       FROM $_tableName
-      WHERE is_deleted = 0
+      WHERE isDeleted = 0
       ''');
 
     return Sqflite.firstIntValue(result) ?? 0;

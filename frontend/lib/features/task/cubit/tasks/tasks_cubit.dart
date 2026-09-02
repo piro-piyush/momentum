@@ -51,15 +51,20 @@ class TasksCubit extends Cubit<TasksState> {
             await taskLocalRepository.deleteTask(task.id);
 
             _removeTaskFromState(task.id);
+            continue;
+          }
+
+          if (task.isNew) {
+            await taskRemoteRepository.createTask(task: task, token: token);
           } else {
             await taskRemoteRepository.updateTask(task: task, token: token);
-
-            await taskLocalRepository.markAsSynced(task.id);
-
-            _markTaskAsSynced(task.id);
           }
+
+          await taskLocalRepository.markAsSynced(task.id);
+
+          _markTaskAsSynced(task.id);
         } catch (_) {
-          // Keep unsynced.
+          // Keep task unsynced.
         }
       }
     } catch (_) {

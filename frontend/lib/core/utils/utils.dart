@@ -26,6 +26,23 @@ List<DateTime> generateWeekDates(int weekOffset) {
   return List.generate(7, (index) => startOfWeek.add(Duration(days: index)));
 }
 
+List<DateTime> generateMonthDates(int monthOffset) {
+  final today = DateTime.now();
+
+  final startOfMonth = DateTime(today.year, today.month + monthOffset, 1);
+
+  final daysInMonth = DateTime(
+    startOfMonth.year,
+    startOfMonth.month + 1,
+    0,
+  ).day;
+
+  return List.generate(
+    daysInMonth,
+    (index) => DateTime(startOfMonth.year, startOfMonth.month, index + 1),
+  );
+}
+
 String rgbToHex(Color color) {
   final r = (color.r * 255.0).round().clamp(0, 255);
   final g = (color.g * 255.0).round().clamp(0, 255);

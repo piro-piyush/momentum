@@ -11,6 +11,7 @@ class TaskModel {
   final DateTime dueAt;
   final bool isSynced;
   final bool isDeleted;
+  final bool isNew;
 
   const TaskModel({
     required this.id,
@@ -22,6 +23,7 @@ class TaskModel {
     required this.color,
     required this.isSynced,
     required this.isDeleted,
+    required this.isNew,
   });
 
   TaskModel copyWith({
@@ -34,6 +36,7 @@ class TaskModel {
     Color? color,
     bool? isSynced,
     bool? isDeleted,
+    bool? isNew,
   }) {
     return TaskModel(
       id: id ?? this.id,
@@ -45,6 +48,7 @@ class TaskModel {
       color: color ?? this.color,
       isSynced: isSynced ?? this.isSynced,
       isDeleted: isDeleted ?? this.isDeleted,
+      isNew: isNew ?? this.isNew,
     );
   }
 
@@ -57,9 +61,10 @@ class TaskModel {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
       'dueAt': dueAt.toIso8601String(),
-      'hexColor': rgbToHex(color),
+      'color': rgbToHex(color),
       'isSynced': isSynced ? 1 : 0,
       'isDeleted': isDeleted ? 1 : 0,
+      'isNew': isNew ? 1 : 0,
     };
   }
 
@@ -77,17 +82,22 @@ class TaskModel {
   }
 
   factory TaskModel.fromLocalJson(Map<String, dynamic> json) {
-    return TaskModel(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String,
-      createdAt: DateTime.parse(json['createdAt'] as String).toLocal(),
-      updatedAt: DateTime.parse(json['updatedAt'] as String).toLocal(),
-      dueAt: DateTime.parse(json['dueAt'] as String).toLocal(),
-      color: hexToRgb(json['hexColor'] as String),
-      isSynced: json['isSynced'] == 1,
-      isDeleted: json['isDeleted'] == 1,
-    );
+    try {
+      return TaskModel(
+        id: json['id'] as String,
+        title: json['title'] as String,
+        description: json['description'] as String,
+        createdAt: DateTime.parse(json['createdAt'] as String).toLocal(),
+        updatedAt: DateTime.parse(json['updatedAt'] as String).toLocal(),
+        dueAt: DateTime.parse(json['dueAt'] as String).toLocal(),
+        color: hexToRgb(json['color'] as String),
+        isSynced: json['isSynced'] == 1,
+        isDeleted: json['isDeleted'] == 1,
+        isNew: json['isNew'] == 1,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   factory TaskModel.fromRemoteJson(Map<String, dynamic> json) {
@@ -104,6 +114,7 @@ class TaskModel {
         color: hexToRgb(json['color'] as String),
         isSynced: true,
         isDeleted: false,
+        isNew: false,
       );
     } catch (e) {
       rethrow;
