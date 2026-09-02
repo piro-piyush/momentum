@@ -158,6 +158,11 @@ class TaskCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    final syncColor = task.isSynced
+        ? colorScheme.onSurfaceVariant
+        : colorScheme.error;
 
     return Row(
       spacing: 8,
@@ -166,10 +171,9 @@ class TaskCardWidget extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Material(
-              color: task.color,
+              color: colorScheme.surfaceContainerLow,
               borderRadius: BorderRadius.circular(16),
-              elevation: 0,
-              shadowColor: Colors.black.withValues(alpha: 0.08),
+              clipBehavior: Clip.antiAlias,
               child: InkWell(
                 borderRadius: BorderRadius.circular(16),
                 onTap: () {
@@ -183,15 +187,17 @@ class TaskCardWidget extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 4,
+                    spacing: 8,
                     children: [
                       Text(
                         task.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.titleLarge?.copyWith(
+                          color: colorScheme.onSurface,
                           fontWeight: FontWeight.w700,
                           height: 1.15,
+                          letterSpacing: -0.2,
                         ),
                       ),
                       Text(
@@ -199,6 +205,7 @@ class TaskCardWidget extends StatelessWidget {
                         maxLines: 4,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
                           height: 1.4,
                         ),
                       ),
@@ -209,29 +216,8 @@ class TaskCardWidget extends StatelessWidget {
             ),
           ),
         ),
-        // Row(
-        //   mainAxisSize: MainAxisSize.min,
-        //   children: [
-        //     Container(
-        //       height: 10,
-        //       width: 10,
-        //       decoration: BoxDecoration(
-        //         color: strengthenColor(task.color, 0.69),
-        //         shape: BoxShape.circle,
-        //       ),
-        //     ),
-        //     Padding(
-        //       padding: const EdgeInsets.all(12.0),
-        //       child: Text(
-        //         task.formatDueTime,
-        //         style: theme.textTheme.bodyLarge?.copyWith(
-        //           fontWeight: FontWeight.w600,
-        //           color: theme.colorScheme.onSurface,
-        //         ),
-        //       ),
-        //     ),
-        //   ],
-        // ),
+
+        // Metadata
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -239,28 +225,42 @@ class TaskCardWidget extends StatelessWidget {
               height: 10,
               width: 10,
               decoration: BoxDecoration(
-                color: strengthenColor(task.color, 0.69),
+                color: colorScheme.primary,
                 shape: BoxShape.circle,
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
+              padding: const EdgeInsets.only(left: 10, right: 12),
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 6,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 3,
                 children: [
-                  Icon(
-                    task.isSynced
-                        ? Icons.cloud_done_outlined
-                        : Icons.cloud_upload_outlined,
-                    size: 18,
-                    color: theme.colorScheme.onSurfaceVariant,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 5,
+                    children: [
+                      Icon(
+                        task.isSynced
+                            ? Icons.cloud_done_outlined
+                            : Icons.cloud_upload_outlined,
+                        size: 17,
+                        color: syncColor,
+                      ),
+                      Text(
+                        task.isSynced ? 'Synced' : 'Pending',
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: syncColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                   Text(
                     task.formatDueTime,
                     style: theme.textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: theme.colorScheme.onSurface,
+                      color: colorScheme.onSurface,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],

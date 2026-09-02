@@ -85,7 +85,7 @@ export const tasks = pgTable("tasks", {
     description: text("description"),
 
     // Flutter Color.toARGB32() value.
-    color: text("color").notNull(),
+    // color: text("color").notNull(),
 
     createdAt: timestamp("created_at", {
         withTimezone: true,
@@ -105,3 +105,4 @@ export const tasks = pgTable("tasks", {
 
 export type Task = typeof tasks.$inferSelect;
 export type NewTask = typeof tasks.$inferInsert;
+

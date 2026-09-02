@@ -4,7 +4,8 @@ import 'package:momentum/lib.dart';
 class TaskModel {
   final String id;
   final String title;
-  final Color color;
+
+  // final Color color;
   final String description;
   final DateTime createdAt;
   final DateTime? updatedAt;
@@ -20,7 +21,7 @@ class TaskModel {
     required this.createdAt,
     this.updatedAt,
     required this.dueAt,
-    required this.color,
+    // required this.color,
     required this.isSynced,
     required this.isDeleted,
     required this.isNew,
@@ -45,7 +46,7 @@ class TaskModel {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       dueAt: dueAt ?? this.dueAt,
-      color: color ?? this.color,
+      // color: color ?? this.color,
       isSynced: isSynced ?? this.isSynced,
       isDeleted: isDeleted ?? this.isDeleted,
       isNew: isNew ?? this.isNew,
@@ -61,7 +62,7 @@ class TaskModel {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
       'dueAt': dueAt.toIso8601String(),
-      'color': rgbToHex(color),
+      // 'color': rgbToHex(color),
       'isSynced': isSynced ? 1 : 0,
       'isDeleted': isDeleted ? 1 : 0,
       'isNew': isNew ? 1 : 0,
@@ -74,7 +75,7 @@ class TaskModel {
       'id': id,
       'title': title,
       'description': description,
-      'color': rgbToHex(color),
+      // 'color': rgbToHex(color),
       'dueAt': dueAt.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
@@ -92,7 +93,7 @@ class TaskModel {
             ? DateTime.parse(json['updatedAt'] as String).toLocal()
             : null,
         dueAt: DateTime.parse(json['dueAt'] as String).toLocal(),
-        color: hexToRgb(json['color'] as String),
+        // color: hexToRgb(json['color'] as String),
         isSynced: json['isSynced'] == 1,
         isDeleted: json['isDeleted'] == 1,
         isNew: json['isNew'] == 1,
@@ -113,7 +114,7 @@ class TaskModel {
             ? DateTime.parse(json['updatedAt'] as String).toLocal()
             : null,
         dueAt: DateTime.parse(json['dueAt'] as String).toLocal(),
-        color: hexToRgb(json['color'] as String),
+        // color: hexToRgb(json['color'] as String),
         isSynced: true,
         isDeleted: false,
         isNew: false,
@@ -135,7 +136,7 @@ class TaskModel {
             other.createdAt == createdAt &&
             other.updatedAt == updatedAt &&
             other.dueAt == dueAt &&
-            other.color == color &&
+            // other.color == color &&
             other.isSynced == isSynced;
   }
 
@@ -148,7 +149,7 @@ class TaskModel {
       createdAt,
       updatedAt,
       dueAt,
-      color,
+      // color,
       isSynced,
     );
   }
