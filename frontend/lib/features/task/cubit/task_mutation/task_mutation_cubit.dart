@@ -27,6 +27,11 @@ class TaskMutationCubit extends Cubit<TaskMutationState> {
 
       emit(TaskCreated(task));
     } catch (error) {
+      if (error is ApiException) {
+        emit(TaskMutationError(error.message, details: error.errors));
+        return;
+      }
+
       emit(TaskMutationError(error.toString()));
     }
   }

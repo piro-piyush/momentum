@@ -1,10 +1,9 @@
 import 'package:momentum/lib.dart';
 
 // class TaskCardWidget extends StatelessWidget {
-//   const TaskCardWidget({super.key, required this.task, required this.onTap});
+//   const TaskCardWidget({super.key, required this.task});
 //
 //   final TaskModel task;
-//   final VoidCallback onTap;
 //
 //   @override
 //   Widget build(BuildContext context) {
@@ -15,8 +14,11 @@ import 'package:momentum/lib.dart';
 //
 //     return Card(
 //       clipBehavior: Clip.antiAlias,
+//       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
 //       child: InkWell(
-//         onTap: onTap,
+//         onTap: () {
+//           Navigator.pushNamed(context, AppRoutes.newTask, arguments: task);
+//         },
 //         child: IntrinsicHeight(
 //           child: Row(
 //             children: [
@@ -149,13 +151,8 @@ import 'package:momentum/lib.dart';
 // }
 
 class TaskCardWidget extends StatelessWidget {
-  const TaskCardWidget({
-    super.key,
-    // required this.color,
-    required this.task,
-  });
+  const TaskCardWidget({super.key, required this.task});
 
-  // final Color color;
   final TaskModel task;
 
   @override
@@ -166,36 +163,48 @@ class TaskCardWidget extends StatelessWidget {
       spacing: 8,
       children: [
         Expanded(
-          child: GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, AppRoutes.newTask, arguments: task);
-            },
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: task.color,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 4,
-                children: [
-                  Text(
-                    task.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Material(
+              color: task.color,
+              borderRadius: BorderRadius.circular(16),
+              elevation: 0,
+              shadowColor: Colors.black.withValues(alpha: 0.08),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.newTask,
+                    arguments: task,
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 4,
+                    children: [
+                      Text(
+                        task.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          height: 1.15,
+                        ),
+                      ),
+                      Text(
+                        task.description,
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    task.description,
-                    maxLines: 4,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                ],
+                ),
               ),
             ),
           ),
@@ -215,7 +224,10 @@ class TaskCardWidget extends StatelessWidget {
               padding: const EdgeInsets.all(12.0),
               child: Text(
                 task.formatDueTime,
-                style: const TextStyle(fontSize: 17),
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: theme.colorScheme.onSurface,
+                ),
               ),
             ),
           ],

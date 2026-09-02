@@ -31,7 +31,8 @@ final class TaskDeleted extends TaskMutationState {
 }
 
 final class TaskMutationError extends TaskMutationState {
-  const TaskMutationError(this.message);
+  const TaskMutationError(this.message, {this.details});
 
   final String message;
+  final dynamic details;
 }
