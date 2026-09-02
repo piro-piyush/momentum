@@ -24,6 +24,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         // if (state is AuthLoggedIn) {
@@ -153,19 +155,14 @@ class _RegisterPageState extends State<RegisterPage> {
                           child: RichText(
                             text: TextSpan(
                               text: 'Already have an account? ',
-                              style: TextStyle(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
-                                fontWeight: FontWeight.w400,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
                               ),
                               children: [
                                 TextSpan(
                                   text: 'Sign in',
-                                  style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primary,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: colorScheme.primary,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),

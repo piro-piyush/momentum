@@ -32,194 +32,172 @@ class ProfilePage extends StatelessWidget {
 
           final user = state.user;
 
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text(
-                'Profile',
-                style: TextStyle(fontWeight: FontWeight.w700),
-              ),
-            ),
-            body: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-              children: [
-                Center(
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 42,
-                        backgroundColor: colorScheme.primaryContainer,
-                        child: Icon(
-                          Icons.person_rounded,
-                          size: 42,
-                          color: colorScheme.onPrimaryContainer,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        user.name,
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        user.email,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
+          return BlocBuilder<TasksCubit, TasksState>(
+            builder: (context, taskState) {
+              final tasks = taskState is TasksLoaded
+                  ? taskState.tasks
+                  : <TaskModel>[];
+
+              final totalTasks = tasks.length;
+
+              final pendingTasks = tasks.where((task) {
+                return task.dueAt.isAfter(DateTime.now());
+              }).length;
+
+              final overdueTasks = tasks.where((task) {
+                return task.dueAt.isBefore(DateTime.now());
+              }).length;
+
+              final todayTasks = tasks.where((task) {
+                final now = DateTime.now();
+
+                return task.dueAt.year == now.year &&
+                    task.dueAt.month == now.month &&
+                    task.dueAt.day == now.day;
+              }).length;
+
+              return Scaffold(
+                appBar: AppBar(
+                  title: const Text(
+                    'Profile',
+                    style: TextStyle(fontWeight: FontWeight.w700),
                   ),
                 ),
-
-                const SizedBox(height: 32),
-
-                Text(
-                  'Your progress',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                Row(
+                body: ListView(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
                   children: [
-                    Expanded(
-                      child: StatCardWidget(
-                        icon: Icons.task_alt_rounded,
-                        value: '128',
-                        label: 'Total tasks',
+                    Center(
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 42,
+                            backgroundColor: colorScheme.primaryContainer,
+                            child: Icon(
+                              Icons.person_rounded,
+                              size: 42,
+                              color: colorScheme.onPrimaryContainer,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            user.name,
+                            style: theme.textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            user.email,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: StatCardWidget(
-                        icon: Icons.check_circle_outline_rounded,
-                        value: '96',
-                        label: 'Completed',
+
+                    const SizedBox(height: 32),
+
+                    Text(
+                      'Your tasks',
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                  ],
-                ),
 
-                const SizedBox(height: 12),
+                    const SizedBox(height: 12),
 
-                Row(
-                  children: [
-                    Expanded(
-                      child: StatCardWidget(
-                        icon: Icons.pending_actions_rounded,
-                        value: '32',
-                        label: 'Pending',
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: StatCardWidget(
-                        icon: Icons.local_fire_department_outlined,
-                        value: '7',
-                        label: 'Day streak',
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 32),
-
-                Text(
-                  'Completion rate',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
+                    Row(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '96 of 128 tasks completed',
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Text(
-                              '75%',
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                color: colorScheme.primary,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
+                        Expanded(
+                          child: StatCardWidget(
+                            icon: Icons.task_alt_rounded,
+                            value: '$totalTasks',
+                            label: 'Total tasks',
+                          ),
                         ),
-                        const SizedBox(height: 16),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: const LinearProgressIndicator(
-                            value: 0.75,
-                            minHeight: 8,
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: StatCardWidget(
+                            icon: Icons.today_rounded,
+                            value: '$todayTasks',
+                            label: 'Today',
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ),
 
-                const SizedBox(height: 32),
+                    const SizedBox(height: 12),
 
-                Text(
-                  'Account',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: StatCardWidget(
+                            icon: Icons.pending_actions_rounded,
+                            value: '$pendingTasks',
+                            label: 'Upcoming',
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: StatCardWidget(
+                            icon: Icons.warning_amber_rounded,
+                            value: '$overdueTasks',
+                            label: 'Overdue',
+                          ),
+                        ),
+                      ],
+                    ),
 
-                const SizedBox(height: 8),
+                    const SizedBox(height: 32),
 
-                Card(
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: const Icon(Icons.person_outline_rounded),
-                        title: const Text('Edit profile'),
-                        subtitle: const Text('Update your name and email'),
-                        trailing: const Icon(Icons.chevron_right_rounded),
-                        onTap: () {},
+                    Text(
+                      'Overview',
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
                       ),
-                      const Divider(height: 1),
-                      ListTile(
-                        leading: const Icon(Icons.notifications_none_rounded),
-                        title: const Text('Notifications'),
-                        trailing: const Icon(Icons.chevron_right_rounded),
-                        onTap: () {},
-                      ),
-                      const Divider(height: 1),
-                      ListTile(
-                        leading: const Icon(Icons.lock_outline_rounded),
-                        title: const Text('Change password'),
-                        trailing: const Icon(Icons.chevron_right_rounded),
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
 
-                const SizedBox(height: 24),
+                    const SizedBox(height: 12),
 
-                OutlinedButton.icon(
-                  onPressed: () => _showLogoutDialog(context),
-                  icon: const Icon(Icons.logout_rounded),
-                  label: const Text('Log out'),
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'You have $totalTasks tasks',
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              '$todayTasks scheduled for today • '
+                              '$pendingTasks upcoming • '
+                              '$overdueTasks overdue',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    FilledButton.icon(
+                      onPressed: () => _showLogoutDialog(context),
+
+                      icon: const Icon(Icons.logout_rounded),
+                      label: const Text('Log out'),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
           );
         },
       ),

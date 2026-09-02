@@ -80,7 +80,10 @@ class _NewTaskPageState extends State<NewTaskPage> {
         }
 
         if (state is TaskMutationError) {
-          SnackBarUtils.error(context, state.message);
+          SnackBarUtils.error(
+            context,
+            ApiService.getApiErrorMessage(state.message, state.details),
+          );
         }
       },
       builder: (context, state) {
