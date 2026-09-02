@@ -13,17 +13,18 @@ class AuthCubit extends Cubit<AuthState> {
   final AuthRemoteRepository authRemoteRepository;
   final AuthLocalRepository authLocalRepository;
 
+  String get token {
+    final token = SpService.getToken();
+    if (token == null || token.isEmpty) {
+      throw Exception('Authentication token not found');
+    }
+    return token;
+  }
+
   Future<void> checkAuth() async {
     emit(AuthChecking());
 
     try {
-      final token = SpService.getToken();
-
-      if (token == null || token.isEmpty) {
-        emit(AuthLoggedOut());
-        return;
-      }
-
       final remoteUser = await authRemoteRepository.getUser(token: token);
 
       if (remoteUser != null) {

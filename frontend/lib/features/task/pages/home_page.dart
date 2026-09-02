@@ -239,12 +239,7 @@ class HomePage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final task = tasks[index];
 
-                      return TaskCardWidget(
-                        color: task.color,
-                        title: task.title,
-                        description: task.description,
-                        dueDate: task.formatDueTime,
-                      );
+                      return TaskCardWidget(task: task);
                     },
                   ),
 
