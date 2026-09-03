@@ -439,29 +439,20 @@ DELETE /:id
 
 # 📦 Android Releases
 
-Android builds are generated using GitHub Actions.
+Android builds are automatically generated using **GitHub Actions**.
 
-The workflow builds both:
+| Build      | Description                   | Download                                                                                             |
+| ---------- | ----------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 📱 **APK** | Direct installation & testing | [**Download APK**](https://github.com/piro-piyush/momentum/releases/latest/download/app-release.apk) |
+| 📦 **AAB** | Google Play distribution      | [**Download AAB**](https://github.com/piro-piyush/momentum/releases/latest/download/app-release.aab) |
 
-```text
-APK
-```
+> **APK** — Install directly on an Android device for testing.
+>
+> **AAB** — Android App Bundle intended for publishing through Google Play.
 
-[Download APK](https://github.com/piro-piyush/momentum/releases/download/v1.0.0/app-release.apk)
+### 🔗 Latest Release
 
-```text
-AAB
-```
-
-[Download AAB](https://github.com/piro-piyush/momentum/releases/download/v1.0.0/app-release.aab)
-
-### APK
-
-The APK can be used for direct Android installation and testing.
-
-### AAB
-
-The Android App Bundle (`.aab`) is intended for distribution through Google Play.
+[**View all Android releases →**](https://github.com/piro-piyush/momentum/releases)
 
 
 ---
