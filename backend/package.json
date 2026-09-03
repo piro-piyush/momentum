@@ -4,8 +4,11 @@
   "description": "Backend API for the Momentum task management app",
   "main": "src/index.js",
   "scripts": {
-    "dev": "npx nodemon"
-  },
+  "dev": "npx nodemon",
+  "start": "tsx src/index.ts",
+  "db:generate": "drizzle-kit generate",
+  "db:migrate": "drizzle-kit migrate"
+},
   "keywords": [
     "momentum",
     "task-management",
