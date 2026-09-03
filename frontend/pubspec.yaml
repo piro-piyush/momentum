@@ -15,7 +15,6 @@ dependencies:
   connectivity_plus: ^7.3.1
   flex_color_picker: ^4.0.0
   flutter_bloc: ^9.1.1
-  #  http: ^1.6.0
   intl: ^0.20.3
   path: ^1.9.1
   shared_preferences: ^2.5.5
@@ -28,11 +27,17 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  icons_launcher: ^3.1.0
+  flutter_svg: ^2.3.0
 
 flutter:
   uses-material-design: true
+
   assets:
     - .env
+    - assets/fonts/
+    - assets/icons/
+
   fonts:
     - family: Cera Pro
       fonts:
@@ -40,3 +45,13 @@ flutter:
           weight: 500
         - asset: assets/fonts/Cera-Pro-Bold.otf
           weight: 700
+
+icons_launcher:
+  image_path: "assets/icons/app_icon.png"
+
+  platforms:
+    android:
+      enable: true
+
+    ios:
+      enable: true
