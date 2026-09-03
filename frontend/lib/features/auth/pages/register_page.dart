@@ -203,7 +203,14 @@ class _RegisterPageState extends State<RegisterPage> {
     if (!formKey.currentState!.validate()) {
       return;
     }
-    if (!(await ConnectivityService.instance.isConnected)) {
+
+    final authCubit = context.read<AuthCubit>();
+
+    final isConnected = await ConnectivityService.instance.isConnected;
+
+    if (!mounted) return;
+
+    if (!isConnected) {
       SnackBarUtils.error(
         context,
         'No internet connection. Please check your network.',
@@ -211,17 +218,19 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    await context.read<AuthCubit>().register(
+    await authCubit.register(
       name: nameController.text.trim(),
       email: emailController.text.trim(),
       password: passwordController.text.trim(),
     );
 
     if (!mounted) return;
+
     SnackBarUtils.success(
       context,
       'Account created successfully. Please login.',
     );
+
     Navigator.pop(context);
   }
 

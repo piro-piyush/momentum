@@ -205,7 +205,13 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    if (!(await ConnectivityService.instance.isConnected)) {
+    final authCubit = context.read<AuthCubit>();
+
+    final isConnected = await ConnectivityService.instance.isConnected;
+
+    if (!mounted) return;
+
+    if (!isConnected) {
       SnackBarUtils.error(
         context,
         'No internet connection. Please check your network.',
@@ -213,7 +219,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    context.read<AuthCubit>().login(
+    authCubit.login(
       email: emailController.text.trim(),
       password: passwordController.text,
     );

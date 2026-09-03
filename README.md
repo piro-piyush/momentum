@@ -101,33 +101,34 @@ momentum/
 
 ## 📱 Screenshots
 
-### Home
-
-![Home](screenshots/home.png)
-
-### Login
-
-![Login](screenshots/login.png)
-
-### Register
-
-![Register](screenshots/register.png)
-
-### New Task
-
-![New Task](screenshots/new_task.png)
-
-### Update Task
-
-![Update Task](screenshots/update_task.png)
-
-### Profile
-
-![Profile](screenshots/profile.png)
-
-### Splash
-
-![Splash](screenshots/splash.png)
+<table>
+  <tr>
+    <td align="center">Home</td>
+    <td align="center">Login</td>
+    <td align="center">Register</td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/home.png" width="180"></td>
+    <td><img src="screenshots/login.png" width="180"></td>
+    <td><img src="screenshots/register.png" width="180"></td>
+  </tr>
+  <tr>
+    <td align="center">New Task</td>
+    <td align="center">Update Task</td>
+    <td align="center">Profile</td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/new_task.png" width="180"></td>
+    <td><img src="screenshots/update_task.png" width="180"></td>
+    <td><img src="screenshots/profile.png" width="180"></td>
+  </tr>
+  <tr>
+    <td align="center">Splash</td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/splash.png" width="180"></td>
+  </tr>
+</table>
 
 ---
 

@@ -261,145 +261,145 @@ class _DateSelectorWidgetState extends State<DateSelectorWidget> {
       ],
     );
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              IconButton(
-                onPressed: () {
-                  _changeMonth(-1);
-                },
-                icon: const Icon(Icons.arrow_back_ios),
-              ),
-              Expanded(
-                child: Center(
-                  child: Text(monthName, style: theme.textTheme.headlineSmall),
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  _changeMonth(1);
-                },
-                icon: const Icon(Icons.arrow_forward_ios),
-              ),
-            ],
-          ),
-        ),
-
-        // Today button
-        if (!isCurrentMonth)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: OutlinedButton(
-              onPressed: _goToToday,
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 8,
-                ),
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                side: BorderSide(color: theme.colorScheme.outlineVariant),
-              ),
-              child: Text(
-                'Go to Today',
-                style: theme.textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: SizedBox(
-            height: 80,
-            child: ListView.builder(
-              itemCount: monthDates.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                final date = monthDates[index];
-
-                final isSelected =
-                    selectedDate.year == date.year &&
-                    selectedDate.month == date.month &&
-                    selectedDate.day == date.day;
-
-                final isToday =
-                    today.year == date.year &&
-                    today.month == date.month &&
-                    today.day == date.day;
-
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: Material(
-                    color: isSelected
-                        ? Colors.deepOrangeAccent
-                        : theme.colorScheme.surface,
-                    borderRadius: BorderRadius.circular(10),
-                    elevation: isSelected ? 2 : 0,
-                    shadowColor: Colors.black.withValues(alpha: 0.12),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(10),
-                      onTap: () {
-                        setState(() {
-                          selectedDate = date;
-                        });
-
-                        widget.onDateSelected(date);
-                      },
-                      child: Container(
-                        width: 70,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: isSelected
-                              ? null
-                              : Border.all(
-                                  color: isToday
-                                      ? Colors.deepOrangeAccent
-                                      : theme.colorScheme.outlineVariant,
-                                  width: isToday ? 1.5 : 1,
-                                ),
-                        ),
-                        child: Column(
-                          spacing: 4,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              DateFormat('d').format(date),
-                              style: theme.textTheme.headlineSmall?.copyWith(
-                                color: isSelected
-                                    ? Colors.white
-                                    : theme.colorScheme.onSurface,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Text(
-                              DateFormat('E').format(date),
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                color: isSelected
-                                    ? Colors.white
-                                    : theme.colorScheme.onSurfaceVariant,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-      ],
-    );
+    // return Column(
+    //   children: [
+    //     Padding(
+    //       padding: const EdgeInsets.symmetric(horizontal: 16),
+    //       child: Row(
+    //         children: [
+    //           IconButton(
+    //             onPressed: () {
+    //               _changeMonth(-1);
+    //             },
+    //             icon: const Icon(Icons.arrow_back_ios),
+    //           ),
+    //           Expanded(
+    //             child: Center(
+    //               child: Text(monthName, style: theme.textTheme.headlineSmall),
+    //             ),
+    //           ),
+    //           IconButton(
+    //             onPressed: () {
+    //               _changeMonth(1);
+    //             },
+    //             icon: const Icon(Icons.arrow_forward_ios),
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //
+    //     // Today button
+    //     if (!isCurrentMonth)
+    //       Padding(
+    //         padding: const EdgeInsets.only(bottom: 8),
+    //         child: OutlinedButton(
+    //           onPressed: _goToToday,
+    //           style: OutlinedButton.styleFrom(
+    //             padding: const EdgeInsets.symmetric(
+    //               horizontal: 14,
+    //               vertical: 8,
+    //             ),
+    //             minimumSize: Size.zero,
+    //             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    //             shape: RoundedRectangleBorder(
+    //               borderRadius: BorderRadius.circular(20),
+    //             ),
+    //             side: BorderSide(color: theme.colorScheme.outlineVariant),
+    //           ),
+    //           child: Text(
+    //             'Go to Today',
+    //             style: theme.textTheme.labelLarge?.copyWith(
+    //               fontWeight: FontWeight.w600,
+    //             ),
+    //           ),
+    //         ),
+    //       ),
+    //
+    //     Padding(
+    //       padding: const EdgeInsets.symmetric(horizontal: 16),
+    //       child: SizedBox(
+    //         height: 80,
+    //         child: ListView.builder(
+    //           itemCount: monthDates.length,
+    //           scrollDirection: Axis.horizontal,
+    //           itemBuilder: (context, index) {
+    //             final date = monthDates[index];
+    //
+    //             final isSelected =
+    //                 selectedDate.year == date.year &&
+    //                 selectedDate.month == date.month &&
+    //                 selectedDate.day == date.day;
+    //
+    //             final isToday =
+    //                 today.year == date.year &&
+    //                 today.month == date.month &&
+    //                 today.day == date.day;
+    //
+    //             return Padding(
+    //               padding: const EdgeInsets.only(right: 8),
+    //               child: Material(
+    //                 color: isSelected
+    //                     ? Colors.deepOrangeAccent
+    //                     : theme.colorScheme.surface,
+    //                 borderRadius: BorderRadius.circular(10),
+    //                 elevation: isSelected ? 2 : 0,
+    //                 shadowColor: Colors.black.withValues(alpha: 0.12),
+    //                 child: InkWell(
+    //                   borderRadius: BorderRadius.circular(10),
+    //                   onTap: () {
+    //                     setState(() {
+    //                       selectedDate = date;
+    //                     });
+    //
+    //                     widget.onDateSelected(date);
+    //                   },
+    //                   child: Container(
+    //                     width: 70,
+    //                     decoration: BoxDecoration(
+    //                       borderRadius: BorderRadius.circular(10),
+    //                       border: isSelected
+    //                           ? null
+    //                           : Border.all(
+    //                               color: isToday
+    //                                   ? Colors.deepOrangeAccent
+    //                                   : theme.colorScheme.outlineVariant,
+    //                               width: isToday ? 1.5 : 1,
+    //                             ),
+    //                     ),
+    //                     child: Column(
+    //                       spacing: 4,
+    //                       mainAxisAlignment: MainAxisAlignment.center,
+    //                       children: [
+    //                         Text(
+    //                           DateFormat('d').format(date),
+    //                           style: theme.textTheme.headlineSmall?.copyWith(
+    //                             color: isSelected
+    //                                 ? Colors.white
+    //                                 : theme.colorScheme.onSurface,
+    //                             fontWeight: FontWeight.w600,
+    //                           ),
+    //                         ),
+    //                         Text(
+    //                           DateFormat('E').format(date),
+    //                           style: theme.textTheme.titleMedium?.copyWith(
+    //                             color: isSelected
+    //                                 ? Colors.white
+    //                                 : theme.colorScheme.onSurfaceVariant,
+    //                             fontWeight: FontWeight.w500,
+    //                           ),
+    //                         ),
+    //                       ],
+    //                     ),
+    //                   ),
+    //                 ),
+    //               ),
+    //             );
+    //           },
+    //         ),
+    //       ),
+    //     ),
+    //   ],
+    // );
   }
 
   void _changeMonth(int value) {
