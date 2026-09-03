@@ -182,10 +182,7 @@ Flutter Application
 
 The complete source code for Momentum is available on GitHub:
 
-**GitHub:**
-https://github.com/YOUR_USERNAME/momentum
-
-Replace `YOUR_USERNAME/momentum` with your actual repository URL.
+**GitHub:** https://github.com/piro-piyush/momentum
 
 ---
 
