@@ -14,7 +14,11 @@ class SplashPage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SvgPicture.asset('assets/app/icon.svg', width: 96, height: 96),
+            SvgPicture.asset(
+              'assets/icons/app_icon.svg',
+              width: 96,
+              height: 96,
+            ),
             const SizedBox(height: 24),
             Text(
               'Momentum',

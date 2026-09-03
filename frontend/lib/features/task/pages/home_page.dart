@@ -239,7 +239,9 @@ class _HomePageState extends State<HomePage> {
                             task.dueAt.month == selectedDate.month &&
                             task.dueAt.day == selectedDate.day;
                       }).toList();
-
+                      if (filteredTasks.isEmpty) {
+                        return NoTaskCardWidget();
+                      }
                       return ListView.builder(
                         itemCount: filteredTasks.length,
                         itemBuilder: (context, index) {
