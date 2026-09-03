@@ -445,8 +445,15 @@ The workflow builds both:
 
 ```text
 APK
+```
+
+[Download APK](https://github.com/piro-piyush/momentum/releases/download/v1.0.0/app-release.apk)
+
+```text
 AAB
 ```
+
+[Download AAB](https://github.com/piro-piyush/momentum/releases/download/v1.0.0/app-release.aab)
 
 ### APK
 
@@ -455,6 +462,7 @@ The APK can be used for direct Android installation and testing.
 ### AAB
 
 The Android App Bundle (`.aab`) is intended for distribution through Google Play.
+
 
 ---
 
