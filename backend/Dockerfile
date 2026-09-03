@@ -28,4 +28,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "npx drizzle-kit migrate --config=/app/drizzle.config.ts && npm start"]
+CMD ["sh", "-c", "npm run db:migrate && npm start"]
